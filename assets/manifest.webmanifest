@@ -1,0 +1,42 @@
+{
+  "id": "substrate-chess-app",
+  "name": "Chess Dap",
+  "dir": "ltr",
+  "lang": "en",
+  "short_name": "Chess Dap",
+  "description": "Play chess on a Substrate Chain.",
+  "start_url": "/?utm_source=pwa",
+  "display": "minimal-ui",
+  "display_override": ["minimal-ui", "browser"],
+  "launch_handler": {
+    "client_mode": "auto"
+  },
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+        "src": "./icons/icon-32x32.png",
+        "sizes": "32x32",
+        "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-192x192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#e6007a",
+  "background_color": "#e6007a",
+  "categories": ["polkadot", "substrate", "dapp", "gaming", "chess"]
+}
