@@ -3,6 +3,8 @@ import { useAccount } from '../../contexts/contexts';
 import { useApi } from '../../contexts/apiProvider';
 import { Game } from './Game';
 import { Intro } from './Intro';
+import { Match } from '../../types/chessTypes';
+import { getUserMatches } from '../../chain/matches';
 
 
 export function Main(): JSX.Element {
@@ -13,12 +15,8 @@ export function Main(): JSX.Element {
 
   React.useEffect(() => {
     async function getMyMatches() {
-      console.log("here");
       if (api !== null && isReady && connectedAccount !== undefined){
-        const chain = await api.rpc.system.chain();
-        console.log(`----- Chain: ${chain} -----`);
-        const matches = await api.query.chess.matches.entries();
-        
+        const matches = await getUserMatches(api, connectedAccount.account.address);
         console.log(matches);
       }
      
