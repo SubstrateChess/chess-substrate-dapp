@@ -1,10 +1,31 @@
 import * as React from 'react';
+import { useAccount } from '../../contexts/contexts';
+import { useApi } from '../../contexts/apiProvider';
 import { Game } from './Game';
 import { Intro } from './Intro';
 
 
 export function Main(): JSX.Element {
-  const [gameOnGoing, setGameOnGoing] = React.useState(true);
+  const [gameOnGoing, setGameOnGoing] = React.useState(false);
+  const { connectedAccount } = useAccount();
+  const { status, isReady ,api } = useApi();
+  console.log(connectedAccount);
+
+  React.useEffect(() => {
+    async function getMyMatches() {
+      console.log("here");
+      if (api !== null && isReady && connectedAccount !== undefined){
+        const chain = await api.rpc.system.chain();
+        console.log(`----- Chain: ${chain} -----`);
+        const matches = await api.query.chess.matches.entries();
+        
+        console.log(matches);
+      }
+     
+    }
+    getMyMatches();
+    // setGame(new Chess());
+  }, [connectedAccount]);
 
   return (
     <main className="flex w-full flex-auto flex-col items-center justify-start gap-4 pt-12 md:pt-10 lg:gap-8">
@@ -13,11 +34,18 @@ export function Main(): JSX.Element {
         <span className="text-center font-unbounded text-h3 lg:text-h1">
           {gameOnGoing ? "Your Game" : "Start a Match"}
         </span>
-        <span className="px-2 text-center text-body">
-          {gameOnGoing ? "Is your turn move" : "Connect your wallet and select the type of match you want to play"}
-        </span>
+        {!connectedAccount && 
+          <span className="px-1 text-center text-body">
+            Connect your wallet to play
+          </span>
+        }
+        {status === "disconnected" && 
+          <span className="px-1 text-center text-body">
+            ❌ To play run the Chess Parachain locally first ❌
+          </span>
+        }
+        {gameOnGoing ? <Game /> : <Intro />}
       </div>
-      {gameOnGoing ? <Game /> : <Intro />}
     </div>
     </main>
   );

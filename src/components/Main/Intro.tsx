@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { Button } from '../../ui/Button';
 import { CheckBox } from '../../ui/CheckBox';
+import { useAccount } from '../../contexts/contexts';
+import { useApi } from '../../contexts/apiProvider';
+import { disconnect } from 'process';
 
 const headline1Url = new URL(
     '../../../assets/images/headline-1.png',
@@ -29,6 +32,7 @@ export function Intro(): JSX.Element {
   }
   
   return (
+    <>
       <div className="flex w-full flex-col gap-8 md:w-[640px]">
         <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
           <img width={200} src={headline1Url} alt="Headline image 1" />
@@ -101,5 +105,6 @@ export function Intro(): JSX.Element {
           <img width={200} src={headline2Url} alt="Headline image 1" />
         </div>
       </div>
+      </>
   );
 }

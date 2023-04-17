@@ -1,96 +1,42 @@
-import { FormEvent, memo, useCallback, useEffect, useState } from 'react';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { BaseWallet, Account } from '@polkadot-onboard/core';
+import { memo} from 'react';
+import { BaseWallet } from '@polkadot-onboard/core';
+import { useWallets } from '../../contexts/contexts';
+import { ConnectCard } from '../../ui/ConnectCard';
+import { ConnectedIcon, AddIcon } from '../../ui/Icons';
 
-const unitToPlanck = (units: string, decimals: number) => {
-  let [whole, decimal] = units.split('.');
 
-  if (typeof decimal === 'undefined') {
-    decimal = '';
+interface IWalletProps {
+    wallet: BaseWallet;
+    clickHandler: () => void;
+}
+
+const Wallet = ({ wallet, clickHandler }: IWalletProps) => {
+  const { walletState } = useWallets();
+  let isConnected = false;
+  if(walletState){
+    const state = walletState.get(wallet?.metadata.title) || 'disconnected';
+    isConnected = state === 'connected';
   }
-
-  return `${whole}${decimal.padEnd(decimals, '0')}`.replace(/^0+/, '');
-}
-
-interface SendTransactionData {
-  senderAddress: string;
-  receiverAddress: string;
-}
-
-const Wallet = ({ wallet }: { wallet: BaseWallet }) => {
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [api, setApi] = useState<ApiPromise | null>(null);
-  const [isBusy, setIsBusy] = useState<boolean>(false);
-
-  useEffect(() => {
-    const setupApi = async () => {
-      const provider = new WsProvider('wss://westend-rpc.polkadot.io');
-      const api = await ApiPromise.create({ provider });
-
-      setApi(api);
-    };
-
-    setupApi();
-  }, []);
-
-  const getAccounts = async () => {
-    if (!isBusy) {
-      try {
-        setIsBusy(true);
-        await wallet.connect();
-        let accounts = await wallet.getAccounts();
-        setAccounts(accounts);
-      } catch (error) {
-        // handle error
-      } finally {
-        setIsBusy(false);
-      }
-    }
-  };
-
-  const handleSubmit = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
-      const form = event.target as HTMLFormElement;
-      event.preventDefault();
-      event.stopPropagation();
-
-      const data = new FormData(form);
-      const { senderAddress, receiverAddress } = Object.fromEntries(data) as unknown as SendTransactionData;
-
-      if (api && wallet?.signer) {
-        const amount = unitToPlanck('0.01', api.registry.chainDecimals[0]);
-
-        await api.tx.balances.transfer(receiverAddress, amount).signAndSend(senderAddress, { signer: wallet.signer }, () => {
-          // do something with result
-        });
-      }
-    },
-    [api, wallet],
-  );
-
   return (
-    <div style={{ marginBottom: '20px' }}>
-      <button onClick={getAccounts}>{`${wallet.metadata.title} ${wallet.metadata.version || ''}`}</button>
-      {accounts.length > 0 &&
-        accounts.map(({ address, name = '' }) => (
-          <form key={address} onSubmit={handleSubmit} style={{ marginBottom: '10px' }}>
-            <div>
-              <label>Account name: {name}</label>
-            </div>
-            <div>
-              <label>
-                Account address: <input name='senderAddress' type='text' required readOnly value={address} size={60} />
-              </label>
-            </div>
-            <div>
-              <label>
-                Receiver address: <input name='receiverAddress' type='text' required size={60} />
-              </label>
-            </div>
-            <button type='submit'>Send donation</button>
-          </form>
-        ))}
-    </div>
+    <ConnectCard
+      className="flex flex-nowrap gap-2 p-2 "
+      onClick={() => clickHandler()}
+    >
+      <div className="flex-auto">
+        <div>{wallet?.metadata.title}</div>
+      </div>
+      <div className="flex min-w-[1.5rem] items-center justify-center">
+        {isConnected ? (
+          <div className="text-[0.5rem] text-green-500">
+            <ConnectedIcon />
+          </div>
+        ) : (
+          <div className="text-gray-500">
+            <AddIcon />
+          </div>
+        )}
+      </div>
+    </ConnectCard>
   );
 };
 

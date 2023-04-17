@@ -8,6 +8,9 @@ import Footer from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
 import { Main } from './components/Main/Main';
 import { extensionConfig } from './extensionConfig';
+import { WalletProvider } from './contexts/walletProvider';
+import { AccountProvider } from './contexts/accountProvider';
+import { APIProvider } from './contexts/apiProvider';
 
 const APP_NAME = 'Chess Dapp Substrate';
 
@@ -15,7 +18,7 @@ function App(): JSX.Element {
   let injectedWalletProvider = new InjectedWalletProvider(extensionConfig, APP_NAME);
   let walletConnectParams = {
     projectId: '4fae85e642724ee66587fa9f37b997e2',
-    relayUrl: 'wss://127.0.0.1:A9944',
+    relayUrl: 'ws://127.0.0.1:9944',
     metadata: {
       name: 'Polkadot Demo',
       description: 'Polkadot Demo',
@@ -26,11 +29,17 @@ function App(): JSX.Element {
   let walletConnectProvider = new WalletConnectProvider(walletConnectParams, APP_NAME);
   let walletAggregator = new WalletAggregator([injectedWalletProvider, walletConnectProvider]);
   return (
+    <APIProvider>
     <PolkadotWalletsContextProvider walletAggregator={walletAggregator}>
-      <Header />
-      <Main />
-      <Footer />
+      <WalletProvider>
+        <AccountProvider>
+          <Header />
+          <Main />
+          <Footer />
+        </AccountProvider>
+      </WalletProvider>  
     </PolkadotWalletsContextProvider>
+    </APIProvider>
   );
 }
 

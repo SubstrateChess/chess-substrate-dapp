@@ -56,18 +56,23 @@ export const Game = () => {
   }
   
   return (
-      <>
-      <div className="flex w-full flex-col md:w-[460px]">
+    <>
+      <div className="flex w-full flex-col gap-4 md:w-[480px]">
+      <span className="px-2 text-center text-body">
+        Move
+      </span>
        <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} customBoardStyle={{
           borderRadius: "4px",
           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
         }}/>
-      </div>
-      <span className="text-body-2">
-        <Button onClick={finishGame}>
-          {matchHasStarted ? "Abort Game" : "Abandon Game"}
-        </Button>
-    </span>
+    </div>
+    <br />
+    <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
+      <Button onClick={finishGame}>
+        {matchHasStarted ? "Abort Game" : "Abandon Game"}
+      </Button>
+    </div>
+   
     </>
   );
 }
