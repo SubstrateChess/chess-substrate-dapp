@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWallets as _useWallets} from '@polkadot-onboard/react';
 import { WalletState, WalletContext } from './contexts';
-import { WalletStateStorage } from './walletStateStorage';
+import { WalletStateStorage } from '../storage/walletStateStorage';
 import { BaseWallet } from '@polkadot-onboard/core';
 
 export const WalletProvider = ({ children }: { children: React.ReactNode }) => {

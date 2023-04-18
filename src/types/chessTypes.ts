@@ -1,7 +1,7 @@
 import BN from 'bn.js';
-import type { AccountId32 } from '@polkadot/types/interfaces/runtime';
 
-export type MatchState = 'AwaitingOpponent' | 'OnGoing' | 'Won' | 'Drawn';
+export type OnGoing = 'Whites' |  'Blacks';
+export type MatchState = 'AwaitingOpponent' | OnGoing | 'Won' | 'Drawn';
 
 export type MatchStyle = "Bullet" |  "Blitz" | "Rapid" | "Daily";
 

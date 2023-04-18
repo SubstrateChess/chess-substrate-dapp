@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react';
 import { SigningAccount } from "../types/walletTypes";
-import { AccountStorage } from "./accountStorage";
+import { AccountStorage } from "../storage/accountStorage";
 import { accountContext, useWallets } from "./contexts";
 
 export const AccountProvider = ({ children }: { children: React.ReactNode }) => {

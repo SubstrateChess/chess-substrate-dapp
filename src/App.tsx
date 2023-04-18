@@ -3,6 +3,8 @@ import { PolkadotWalletsContextProvider } from '@polkadot-onboard/react';
 import { WalletAggregator } from '@polkadot-onboard/core';
 import { InjectedWalletProvider } from '@polkadot-onboard/injected-wallets';
 import { WalletConnectProvider } from '@polkadot-onboard/wallet-connect';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Footer from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
@@ -35,6 +37,18 @@ function App(): JSX.Element {
         <AccountProvider>
           <Header />
           <Main />
+          <ToastContainer
+            position="bottom-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           <Footer />
         </AccountProvider>
       </WalletProvider>  

@@ -1,37 +1,36 @@
-import { QueryableConsts, QueryableStorage } from '@polkadot/api/types';
+import { QueryableStorage } from '@polkadot/api/types';
 import { StorageKey } from '@polkadot/types';
 import { Option } from '@polkadot/types-codec';
-import { AccountId32 } from '@polkadot/types/interfaces';
 import type { } from '@polkadot/types/lookup';
 import { Match, MatchInfo, MatchState, MatchStyle } from '../types/chessTypes';
 
-function toMatch(
-    o: any
+function parseMatch(
+  matchData: any
   ): MatchInfo {
     return {
-        challenger: o.challenger.toString(),
-        opponent: o.opponent.toString(),
-        board: o.board.toHuman(),
-        state: o.state.toString() as MatchState,
-        nonce: o.nonce.toNumber(),
-        style: o.style.toString() as MatchStyle,
-        lastMove: o.lastMove.toNumber(),
-        start: o.start.toNumber(),
-        betAssetId: o.betAssetId.toNumber(),
-        betAmount: o.betAmount.toBn(),
+        challenger: matchData.challenger.toString(),
+        opponent: matchData.opponent.toString(),
+        board: matchData.board.toHuman(),
+        state: (matchData.state.OnGoing ? matchData.state.OnGoing.toString() : matchData.state.toString()) as MatchState,
+        nonce: matchData.nonce.toNumber(),
+        style: matchData.style.toString() as MatchStyle,
+        lastMove: matchData.lastMove.toNumber(),
+        start: matchData.start.toNumber(),
+        betAssetId: matchData.betAssetId.toNumber(),
+        betAmount: matchData.betAmount.toBn(),
     } as MatchInfo;
 }
 
-function toUserMatch(
+function parseMatches(
     matches: [
       StorageKey<[any]>,
       Option<any>
     ][], userAccount: String
   ): Match[] {
     const userMatches: Match[] = [];
-    matches.map((o) => {
-      const key = o[0].args[0];
-      const matchInfo = toMatch(o[1].unwrap());
+    matches.map((matchData) => {
+      const key = matchData[0].args[0];
+      const matchInfo = parseMatch(matchData[1].unwrap());
       if(matchInfo.challenger === userAccount || matchInfo.opponent === userAccount){
         userMatches.push({match_id: key.toString(), match: matchInfo});
       }
@@ -42,5 +41,5 @@ function toUserMatch(
   export async function getUserMatches(api: {
     query: QueryableStorage<'promise'>;
   }, userAccount: String): Promise<Match[]> {
-    return toUserMatch(await api.query.chess.matches.entries(), userAccount);
+    return parseMatches(await api.query.chess.matches.entries(), userAccount);
   }

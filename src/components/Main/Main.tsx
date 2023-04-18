@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useAccount } from '../../contexts/contexts';
 import { useApi } from '../../contexts/apiProvider';
-import { Game } from './Game';
+import { BoardMatch } from '../Match/BoardMatch';
 import { Intro } from './Intro';
 import { Match } from '../../types/chessTypes';
 import { getUserMatches } from '../../chain/matches';
@@ -11,13 +11,16 @@ export function Main(): JSX.Element {
   const [gameOnGoing, setGameOnGoing] = React.useState(false);
   const { connectedAccount } = useAccount();
   const { status, isReady ,api } = useApi();
-  console.log(connectedAccount);
+  const [match, setMatch] = React.useState<Match | null>(null);
 
   React.useEffect(() => {
     async function getMyMatches() {
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);
-        console.log(matches);
+        if (matches.length > 0) {
+          setGameOnGoing(true);
+          setMatch(matches[0]);
+        }
       }
      
     }
@@ -42,7 +45,7 @@ export function Main(): JSX.Element {
             ❌ To play run the Chess Parachain locally first ❌
           </span>
         }
-        {gameOnGoing ? <Game /> : <Intro />}
+        {gameOnGoing ? <BoardMatch game={match}/> : <Intro />}
       </div>
     </div>
     </main>

@@ -1,4 +1,4 @@
-import { WalletState } from "./contexts";
+import { WalletState } from "../contexts/contexts";
 
 /**
  * Provides a local storage utility class to store the connection state of each wallet.

@@ -32,7 +32,8 @@
     "chess.js": "0.12.0",
     "react": "^18.2.0",
     "react-chessboard": "^2.1.2",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-toastify": "^9.1.2"
   },
   "devDependencies": {
     "@parcel/compressor-brotli": "2.8.3",

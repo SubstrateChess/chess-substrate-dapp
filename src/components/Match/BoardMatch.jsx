@@ -1,17 +1,19 @@
 import * as React from 'react';
 import {Chess} from "chess.js";
+import {toast } from 'react-toastify';
 import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
 
-export const Game = () => {
+export const BoardMatch = (props) => {
   const [game, setGame] = React.useState(new Chess());
   const [fen, setFen] = React.useState(game.fen());
   const [matchHasStarted, setMatchHasStarted] = React.useState(false);
+  const match = props.game.match;
 
-  // React.useEffect(() => {
-  //   console.log("here");
-  //   setGame(new Chess());
-  // }, [game]);
+  React.useEffect(() => {
+    setFen(match.board);
+    setGame(new Chess());
+  }, []);
 
   const finishGame = () => {
     if(matchHasStarted){
@@ -28,14 +30,40 @@ export const Game = () => {
   function makeAMove(move) {
     const gameCopy = game;
     try{
-      const result = gameCopy.move(move);
-      setGame(gameCopy);
-      setFen(game.fen());
-      //Make the move 
-      return result; // null if the move was illegal, the move object if the move was legal
+      if(props.game.match.state === "Ongoing" ){
+
+      
+        const result = gameCopy.move(move);
+        setGame(gameCopy);
+        setFen(game.fen());
+        //Make the move 
+        return result; // null if the move was illegal, the move object if the move was legal
+      }
+      else {
+        toast.error(props.game.match.state, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return null;
+      }
     }
     catch(e){
-      console.log(e);
+      toast.error(e.toString(), {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       return null;
     }
   }
@@ -59,7 +87,7 @@ export const Game = () => {
     <>
       <div className="flex w-full flex-col gap-4 md:w-[480px]">
       <span className="px-2 text-center text-body">
-        Move
+        MatchId: {props.game.match_id}, Status {props.game.match.state}
       </span>
        <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} customBoardStyle={{
           borderRadius: "4px",
@@ -72,7 +100,6 @@ export const Game = () => {
         {matchHasStarted ? "Abort Game" : "Abandon Game"}
       </Button>
     </div>
-   
     </>
   );
 }
