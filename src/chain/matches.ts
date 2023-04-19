@@ -1,6 +1,7 @@
 import { QueryableStorage } from '@polkadot/api/types';
 import { StorageKey } from '@polkadot/types';
 import { Option } from '@polkadot/types-codec';
+import { AnyJson } from '@polkadot/types-codec/types';
 import type { } from '@polkadot/types/lookup';
 import { Match, MatchInfo, MatchState, MatchStyle } from '../types/chessTypes';
 
@@ -51,4 +52,30 @@ function parseMatches(
     query: QueryableStorage<'promise'>;
   }, userAccount: String): Promise<Match[]> {
     return parseMatches(await api.query.chess.matches.entries(), userAccount);
+  }
+
+  function parseIndividualMatchResponse(match_id: string, response: any): Match {
+    const match: Match = {
+      match_id, 
+      match: {
+        challenger: response.challenger.toString(),
+        opponent: response.opponent.toString(),
+        board: response.board,
+        state: parseState(response.state),
+        nonce: response.nonce,
+        style: response.style.toString() as MatchStyle,
+        lastMove: response.lastMove,
+        start: response.start,
+        betAssetId: response.betAssetId,
+        betAmount: response.betAmount,
+      } as MatchInfo
+    }
+    return match;
+  }
+
+  export async function getMatch(api: {
+    query: QueryableStorage<'promise'>;
+  }, hash: string): Promise<Match> {
+    const response = await api.query.chess.matches(hash);
+    return parseIndividualMatchResponse(hash, response.toHuman());
   }

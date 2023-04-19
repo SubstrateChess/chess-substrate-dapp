@@ -1,4 +1,5 @@
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
+import {Piece, PieceColor, PieceType} from "chess.js";
 import { MatchInfo, MatchState } from "../../types/chessTypes";
 
 export function boardOrientation(match: MatchInfo, myAddress: string): BoardOrientation {
@@ -6,6 +7,28 @@ export function boardOrientation(match: MatchInfo, myAddress: string): BoardOrie
      return 'black';
     }
     return 'white';
+}
+export function getPieceType (piece: string): PieceType {
+    return Array.from(piece)[1] as PieceType;
+}
+export function getPieceColor (piece: string): PieceColor {
+    return Array.from(piece)[0] as PieceColor;
+}
+
+export function isMyPiece(match: MatchInfo, myAddress: string, piece: PieceColor): boolean {
+    if(myAddress === match.opponent){
+        if (piece === 'b'){
+            return true;
+        }
+        return false;
+    }
+    if(myAddress === match.challenger){
+        if (piece === 'w'){
+            return true;
+        }
+        return false;
+    }
+    return false;
  }
 
 export function isMyTurn(match: MatchInfo, myAddress: string): boolean {
