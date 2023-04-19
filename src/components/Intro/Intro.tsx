@@ -6,7 +6,7 @@ import { SigningAccount } from '../../types/walletTypes';
 import { displayError, displaySuccess } from '../../utils/errors';
 import { useApi } from '../../contexts/apiProvider';
 import { MatchState, MatchStyle } from '../../types/chessTypes';
-import { create_match } from '../../chain/game';
+import { create_match, join_match } from '../../chain/game';
 import BN from 'bn.js';
 
 const headline1Url = new URL(
@@ -59,8 +59,26 @@ export function Intro(props: IntroProps): JSX.Element {
     }
   }
 
-  const joinGame = () => {
-    console.log("join game");
+  const joinGame = async () => {
+    if(matchId === ""){
+      displayError("Insert a match Id to join the match");
+      return;
+    }
+    if(!api || !props.myAccount){
+      displayError("Make sure you have you account and network connected");
+      return;
+    }
+    try{
+      await join_match(api, props.myAccount, matchId, (result) => {
+            console.log(result.toHuman());
+            displaySuccess("Match joined successfully");
+            props.setGameOnGoing(true);
+      });
+    }
+    catch(e: any){
+      console.log(e.message);
+      displayError(e.message);
+    }
   }
   
   return (
@@ -127,7 +145,7 @@ export function Intro(props: IntroProps): JSX.Element {
                     id="address"
                     placeholder="Match Id"
                     className="w-full self-stretch rounded-lg bg-[#ebeaea] px-4 py-2 text-left text-sm text-black opacity-70"
-                    onChange={(event) => setAddressRival(event.target.value)}
+                    onChange={(event) => setMatchId(event.target.value)}
                 />
             </span>
             <Button onClick={joinGame}>

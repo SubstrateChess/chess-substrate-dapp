@@ -41,7 +41,7 @@ function parseMatches(
     matches.map((matchData) => {
       const key = matchData[0].args[0];
       const matchInfo = parseMatch(matchData[1].unwrap());
-      if(matchInfo.challenger === userAccount || matchInfo.opponent === userAccount){
+      if(matchInfo.challenger === userAccount || (matchInfo.opponent === userAccount && matchInfo.state !== 'AwaitingOpponent')){
         userMatches.push({match_id: key.toString(), match: matchInfo});
       }
     });

@@ -17,9 +17,9 @@ export function Main(): JSX.Element {
 
   React.useEffect(() => {
     async function getMyMatches() {
-      console.log("here");
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);
+        console.log(matches);
         if (matches.length > 0) {
           setGameOnGoing(true);
           setMatch(matches[0]);
@@ -28,6 +28,7 @@ export function Main(): JSX.Element {
           setGameOnGoing(false);
         }
       }
+      
      
     }
     getMyMatches();

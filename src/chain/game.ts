@@ -72,3 +72,19 @@ export async function create_match(
     });
     return unsub;
 }
+
+export async function join_match(
+    api: ApiPromise, 
+    myAccount: SigningAccount, 
+    matchId: string,
+    callback: ((result: SubmittableResult) => void) | undefined = undefined): Promise<() => void> {
+    const extrinsic = api.tx.chess.joinMatch(matchId);
+    const unsub = await signAndSend(myAccount.account.address, myAccount.signer, extrinsic, (callResult) => {
+            const { status } = callResult;
+            if (status.isFinalized || status.isInvalid) {
+              unsub();
+            }
+            callback?.(callResult);
+    });
+    return unsub;
+}
