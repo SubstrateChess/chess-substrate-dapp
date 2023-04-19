@@ -1,9 +1,13 @@
 import * as React from 'react';
+import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '../../ui/Button';
 import { CheckBox } from '../../ui/CheckBox';
-import { useAccount } from '../../contexts/contexts';
+import { SigningAccount } from '../../types/walletTypes';
+import { displayError, displaySuccess } from '../../utils/errors';
 import { useApi } from '../../contexts/apiProvider';
-import { disconnect } from 'process';
+import { MatchState, MatchStyle } from '../../types/chessTypes';
+import { create_match } from '../../chain/game';
+import BN from 'bn.js';
 
 const headline1Url = new URL(
     '../../../assets/images/headline-1.png',
@@ -17,14 +21,42 @@ const headline2Url = new URL(
 
 const MatchStyle: string[] = ["Bullet", "Blitz", "Rapid", "Daily"]; // 1 minute, 5min , 15min , 1 days
 
+interface IntroProps{
+  myAccount: SigningAccount | undefined;
+  setGameOnGoing: (gameOnGoing: boolean) => void;
+}
 
-export function Intro(): JSX.Element {
+export function Intro(props: IntroProps): JSX.Element {
   const [checkBoxSelected, setCheckBoxSelected] = React.useState(-1);
   const [addressRival, setAddressRival] = React.useState("");
   const [matchId, setMatchId] = React.useState("");
 
-  const startGame = () => {
-    console.log("start game");
+  const { api } = useApi();
+
+  const BET_ASSET_ID = 200;
+  const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
+
+  const startGame = async () => {
+    if(addressRival === "" || checkBoxSelected === -1){
+      displayError("Complete all the fields to start the match");
+      return;
+    }
+    if(!api || !props.myAccount){
+      displayError("Make sure you have you account and network connected");
+      return;
+    }
+    try{
+      await create_match(api, props.myAccount, addressRival, MatchStyle[checkBoxSelected] as MatchStyle, BET_ASSET_ID, BET_ASSET_DEPOSIT, 
+          (result) => {
+            console.log(result.toHuman());
+            displaySuccess("Match created successfully");
+            props.setGameOnGoing(true);
+      });
+    }
+    catch(e: any){
+      console.log(e.message);
+      displayError(e.message);
+    }
   }
 
   const joinGame = () => {

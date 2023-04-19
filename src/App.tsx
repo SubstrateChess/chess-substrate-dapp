@@ -3,7 +3,7 @@ import { PolkadotWalletsContextProvider } from '@polkadot-onboard/react';
 import { WalletAggregator } from '@polkadot-onboard/core';
 import { InjectedWalletProvider } from '@polkadot-onboard/injected-wallets';
 import { WalletConnectProvider } from '@polkadot-onboard/wallet-connect';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Footer from './components/Footer/Footer';

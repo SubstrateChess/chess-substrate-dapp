@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useAccount } from '../../contexts/contexts';
 import { useApi } from '../../contexts/apiProvider';
 import { BoardMatch } from '../Match/BoardMatch';
-import { Intro } from './Intro';
+import { Intro } from '../Intro/Intro';
 import { Match } from '../../types/chessTypes';
 import { getUserMatches } from '../../chain/matches';
 
@@ -17,6 +17,7 @@ export function Main(): JSX.Element {
 
   React.useEffect(() => {
     async function getMyMatches() {
+      console.log("here");
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);
         if (matches.length > 0) {
@@ -31,7 +32,7 @@ export function Main(): JSX.Element {
     }
     getMyMatches();
     // setGame(new Chess());
-  }, [connectedAccount]);
+  }, [connectedAccount, gameOnGoing]);
 
   return (
     <main className="flex w-full flex-auto flex-col items-center justify-start gap-4 pt-12 md:pt-10 lg:gap-8">
@@ -51,7 +52,8 @@ export function Main(): JSX.Element {
           </span>
         }
         {(gameOnGoing && match && connectedAccount) ? 
-          <BoardMatch game={match} myAccount={connectedAccount}  setGameOnGoing={setGameOnGoing} /> : <Intro />
+          <BoardMatch game={match} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} /> : 
+          <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing}/>
         }
       </div>
     </div>

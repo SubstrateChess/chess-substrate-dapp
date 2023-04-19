@@ -24,3 +24,15 @@ export function displayMessage(message: string) {
       theme: "light",
     });
 }
+export function displaySuccess(message: string) {
+  toast.success(message, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+}
