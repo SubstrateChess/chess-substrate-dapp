@@ -12,3 +12,15 @@ export function displayError(message: string) {
         theme: "light",
       });
 }
+export function displayMessage(message: string) {
+  toast.update(message, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+}

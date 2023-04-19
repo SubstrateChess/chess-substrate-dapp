@@ -51,7 +51,7 @@ export function Main(): JSX.Element {
           </span>
         }
         {(gameOnGoing && match && connectedAccount) ? 
-          <BoardMatch game={match} myAccount={connectedAccount}/> : <Intro />
+          <BoardMatch game={match} myAccount={connectedAccount}  setGameOnGoing={setGameOnGoing} /> : <Intro />
         }
       </div>
     </div>

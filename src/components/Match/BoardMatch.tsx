@@ -2,18 +2,19 @@ import * as React from 'react';
 import {Chess, ChessInstance, Move} from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
-import { Match, MatchInfo } from '../../types/chessTypes';
+import { Match } from '../../types/chessTypes';
 import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg } from './boardHelper';
-import { displayError } from '../../utils/errors';
+import { displayError, displayMessage } from '../../utils/errors';
 import { useApi } from '../../contexts/apiProvider';
-import { make_move } from '../../chain/game';
+import { abandon_match, abort_match, make_move } from '../../chain/game';
 import { SigningAccount } from 'src/types/walletTypes';
-import { Piece, Square } from 'react-chessboard/dist/chessboard/types';
+import { Square } from 'react-chessboard/dist/chessboard/types';
 import { getMatch } from '../../chain/matches';
 
 interface MatchProps{
   game: Match;
   myAccount: SigningAccount;
+  setGameOnGoing: (gameOnGoing: boolean) => void;
 }
 export const BoardMatch = (props: MatchProps) => {
   const [game, setGame] = React.useState(new Chess());
@@ -43,12 +44,23 @@ export const BoardMatch = (props: MatchProps) => {
     move();
   }, [movePiece !== ""]);
 
-  const finishGame = () => {
-    if(matchHasStarted(matchInfo.match)){
-      console.log("abandom game");
-    }
-    else {
-      console.log("abort game");
+  const finishGame = async () => {
+    if (api){
+      if(matchHasStarted(matchInfo.match)){
+        // Abandom game and lose
+        await abandon_match(api, props.myAccount, props.game.match_id,  (result) => {
+          console.log(result);
+          displayMessage("You have lost by abandon");
+          props.setGameOnGoing(false);
+        });
+      }
+      else {
+        // Abort game
+        await abort_match(api, props.myAccount, props.game.match_id,  (result) => {
+          displayMessage("Match aborted successfully");
+          props.setGameOnGoing(false);
+        });
+      }
     }
   }
   const updateMatch = async () => {
@@ -113,7 +125,6 @@ export const BoardMatch = (props: MatchProps) => {
     }
   }
 
-   //TODO: Update status after move
   return (
     <>
       <div className="flex flex-col gap-4 md:w-[480px]">
@@ -130,7 +141,7 @@ export const BoardMatch = (props: MatchProps) => {
     <br />
     <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
       <Button onClick={finishGame}>
-        {matchHasStarted(matchInfo.match) ? "Abort Game" : "Abandon Game"}
+        {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
       </Button>
     </div>
     </>
