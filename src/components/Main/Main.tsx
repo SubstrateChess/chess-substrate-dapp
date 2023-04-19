@@ -9,9 +9,11 @@ import { getUserMatches } from '../../chain/matches';
 
 export function Main(): JSX.Element {
   const [gameOnGoing, setGameOnGoing] = React.useState(false);
-  const { connectedAccount } = useAccount();
-  const { status, isReady ,api } = useApi();
   const [match, setMatch] = React.useState<Match | null>(null);
+  const { status, isReady ,api } = useApi();
+
+  const { connectedAccount } = useAccount();
+  
 
   React.useEffect(() => {
     async function getMyMatches() {
@@ -20,6 +22,9 @@ export function Main(): JSX.Element {
         if (matches.length > 0) {
           setGameOnGoing(true);
           setMatch(matches[0]);
+        }
+        else{
+          setGameOnGoing(false);
         }
       }
      
@@ -45,7 +50,9 @@ export function Main(): JSX.Element {
             ❌ To play run the Chess Parachain locally first ❌
           </span>
         }
-        {gameOnGoing ? <BoardMatch game={match}/> : <Intro />}
+        {(gameOnGoing && match && connectedAccount) ? 
+          <BoardMatch game={match} myAccount={connectedAccount}/> : <Intro />
+        }
       </div>
     </div>
     </main>

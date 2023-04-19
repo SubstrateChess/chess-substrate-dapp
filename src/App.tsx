@@ -36,6 +36,7 @@ function App(): JSX.Element {
       <WalletProvider>
         <AccountProvider>
           <Header />
+          <div className="flex h-screen items-center justify-center">
           <Main />
           <ToastContainer
             position="bottom-center"
@@ -49,6 +50,7 @@ function App(): JSX.Element {
             pauseOnHover
             theme="light"
           />
+          </div>
           <Footer />
         </AccountProvider>
       </WalletProvider>  

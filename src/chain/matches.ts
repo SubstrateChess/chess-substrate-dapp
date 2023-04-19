@@ -4,6 +4,15 @@ import { Option } from '@polkadot/types-codec';
 import type { } from '@polkadot/types/lookup';
 import { Match, MatchInfo, MatchState, MatchStyle } from '../types/chessTypes';
 
+function parseState(matchState: any): MatchState {
+  if(matchState.isOnGoing && matchState.asOnGoing.isWhites){
+    return 'Whites' as MatchState;
+  }
+  if(matchState.isOnGoing && matchState.asOnGoing.isBlacks){
+    return 'Blacks' as MatchState;
+  }
+  return matchState.toString() as MatchState;
+}
 function parseMatch(
   matchData: any
   ): MatchInfo {
@@ -11,7 +20,7 @@ function parseMatch(
         challenger: matchData.challenger.toString(),
         opponent: matchData.opponent.toString(),
         board: matchData.board.toHuman(),
-        state: (matchData.state.OnGoing ? matchData.state.OnGoing.toString() : matchData.state.toString()) as MatchState,
+        state: parseState(matchData.state),
         nonce: matchData.nonce.toNumber(),
         style: matchData.style.toString() as MatchStyle,
         lastMove: matchData.lastMove.toNumber(),

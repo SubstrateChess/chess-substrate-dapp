@@ -1,18 +1,17 @@
 import BN from 'bn.js';
 
-export type OnGoing = 'Whites' |  'Blacks';
-export type MatchState = 'AwaitingOpponent' | OnGoing | 'Won' | 'Drawn';
+export type MatchState = 'AwaitingOpponent' | 'Whites' |  'Blacks' | 'Won' | 'Drawn';
 
 export type MatchStyle = "Bullet" |  "Blitz" | "Rapid" | "Daily";
 
 export interface Match {
-    match_id: String;
+    match_id: string;
     match: MatchInfo;
 }
 export interface MatchInfo {
-    challenger: String;
-    opponent: String;
-    board: String;
+    challenger: string;
+    opponent: string;
+    board: string;
     state: MatchState;
     nonce: number;
     style: MatchStyle
