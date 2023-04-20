@@ -9,13 +9,13 @@ import { MatchState, MatchStyle } from '../../types/chessTypes';
 import { create_match, join_match } from '../../chain/game';
 import BN from 'bn.js';
 
-const headline1Url = new URL(
-    '../../../assets/images/headline-1.png',
+const whitesImg = new URL(
+    '../../../assets/images/whites.png',
     import.meta.url
 ).toString();
 
-const headline2Url = new URL(
-    '../../../assets/images/headline-2.png',
+const blacksImg = new URL(
+    '../../../assets/images/blacks.png',
     import.meta.url
 ).toString();
 
@@ -85,7 +85,7 @@ export function Intro(props: IntroProps): JSX.Element {
     <>
       <div className="flex w-full flex-col gap-8 md:w-[640px]">
         <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
-          <img width={200} src={headline1Url} alt="Headline image 1" />
+          <img width={200} src={whitesImg} alt="whites pieces" />
           <div className="flex w-full flex-col gap-1">
             <span className="text-h6 font-semibold">Start a Match</span>
             <span className="text-body-2">
@@ -152,7 +152,7 @@ export function Intro(props: IntroProps): JSX.Element {
                 Join Game
             </Button>
           </div>
-          <img width={200} src={headline2Url} alt="Headline image 1" />
+          <img width={200} src={blacksImg} alt="black pieces" />
         </div>
       </div>
       </>
