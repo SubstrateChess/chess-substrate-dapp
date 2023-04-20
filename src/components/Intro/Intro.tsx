@@ -1,5 +1,5 @@
 import * as React from 'react';
-import 'react-toastify/dist/ReactToastify.css';
+import BN from 'bn.js';
 import { Button } from '../../ui/Button';
 import { CheckBox } from '../../ui/CheckBox';
 import { SigningAccount } from '../../types/walletTypes';
@@ -7,7 +7,8 @@ import { displayError, displaySuccess } from '../../utils/errors';
 import { useApi } from '../../contexts/apiProvider';
 import { MatchState, MatchStyle } from '../../types/chessTypes';
 import { create_match, join_match } from '../../chain/game';
-import BN from 'bn.js';
+import { checkCreateMatchForm, checkJoinMatchForm, displayResultExtrinsicMessage } from './introHelper';
+import { ExtrinsicResult } from '../../types/apiTypes';
 
 const whitesImg = new URL(
     '../../../assets/images/whites.png',
@@ -21,6 +22,10 @@ const blacksImg = new URL(
 
 const MatchStyle: string[] = ["Bullet", "Blitz", "Rapid", "Daily"]; // 1 minute, 5min , 15min , 1 days
 
+//TODO: Allow user to specify its own asset for betting
+const BET_ASSET_ID = 200;
+const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
+
 interface IntroProps{
   myAccount: SigningAccount | undefined;
   setGameOnGoing: (gameOnGoing: boolean) => void;
@@ -33,49 +38,41 @@ export function Intro(props: IntroProps): JSX.Element {
 
   const { api } = useApi();
 
-  const BET_ASSET_ID = 200;
-  const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
-
   const startGame = async () => {
-    if(addressRival === "" || checkBoxSelected === -1){
-      displayError("Complete all the fields to start the match");
-      return;
-    }
     if(!api || !props.myAccount){
       displayError("Make sure you have you account and network connected");
       return;
     }
+    checkCreateMatchForm(addressRival,checkBoxSelected);
+    
     try{
       await create_match(api, props.myAccount, addressRival, MatchStyle[checkBoxSelected] as MatchStyle, BET_ASSET_ID, BET_ASSET_DEPOSIT, 
-          (result) => {
-            console.log(result.toHuman());
-            displaySuccess("Match created successfully");
+          (result: ExtrinsicResult) => {
+            displayResultExtrinsicMessage(result);
             props.setGameOnGoing(true);
       });
     }
     catch(e: any){
+      //TODO: Handle error, checking inputs
       console.log(e.message);
       displayError(e.message);
     }
   }
 
   const joinGame = async () => {
-    if(matchId === ""){
-      displayError("Insert a match Id to join the match");
-      return;
-    }
     if(!api || !props.myAccount){
       displayError("Make sure you have you account and network connected");
       return;
     }
+    checkJoinMatchForm(matchId);
     try{
-      await join_match(api, props.myAccount, matchId, (result) => {
-            console.log(result.toHuman());
-            displaySuccess("Match joined successfully");
-            props.setGameOnGoing(true);
+      await join_match(api, props.myAccount, matchId, (result: ExtrinsicResult) => {
+          displayResultExtrinsicMessage(result);
+          props.setGameOnGoing(true);
       });
     }
     catch(e: any){
+      //TODO: Handle error, checking inputs
       console.log(e.message);
       displayError(e.message);
     }

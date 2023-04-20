@@ -19,13 +19,13 @@ const APP_NAME = 'Chess Dapp Substrate';
 function App(): JSX.Element {
   let injectedWalletProvider = new InjectedWalletProvider(extensionConfig, APP_NAME);
   let walletConnectParams = {
-    projectId: '4fae85e642724ee66587fa9f37b997e2',
+    projectId: 'chess-dapp-substrate',
     relayUrl: 'ws://127.0.0.1:9944',
     metadata: {
-      name: 'Polkadot Demo',
-      description: 'Polkadot Demo',
+      name: 'Chess Dapp Substrate',
+      description: 'Chess Dapp Substrate',
       url: '#',
-      icons: ['https://walletconnect.com/walletconnect-logo.png'],
+      icons: ['./logo192.png'],
     },
   };
   let walletConnectProvider = new WalletConnectProvider(walletConnectParams, APP_NAME);
@@ -49,6 +49,7 @@ function App(): JSX.Element {
               draggable
               pauseOnHover
               theme="light"
+              enableMultiContainer
             />
           </div>
           <Footer />

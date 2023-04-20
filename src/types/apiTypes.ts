@@ -1,6 +1,9 @@
 import { ApiPromise } from '@polkadot/api';
 
-
+export type ExtrinsicResult = {
+  success: boolean;
+  message: string;
+}
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
 export type NetworkName = 'local';
 

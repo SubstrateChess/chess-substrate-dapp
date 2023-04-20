@@ -1,5 +1,4 @@
 import * as React from 'react';
-import 'react-toastify/dist/ReactToastify.css';
 import {Chess, ChessInstance, Move} from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
