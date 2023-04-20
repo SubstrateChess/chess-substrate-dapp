@@ -75,7 +75,13 @@ function parseMatches(
 
   export async function getMatch(api: {
     query: QueryableStorage<'promise'>;
-  }, hash: string): Promise<Match> {
+  }, hash: string): Promise<Match | null> {
     const response = await api.query.chess.matches(hash);
-    return parseIndividualMatchResponse(hash, response.toHuman());
+    if(response){
+      return parseIndividualMatchResponse(hash, response.toHuman());
+    }
+    else {
+      return null;
+    }
+    
   }

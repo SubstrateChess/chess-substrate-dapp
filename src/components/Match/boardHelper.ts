@@ -1,21 +1,23 @@
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
 import {Piece, PieceColor, PieceType} from "chess.js";
 import { MatchInfo, MatchState } from "../../types/chessTypes";
+import { ExtrinsicResult } from "../../types/apiTypes";
+import { displayError } from "../../utils/errors";
 
-export function boardOrientation(match: MatchInfo, myAddress: string): BoardOrientation {
+function boardOrientation(match: MatchInfo, myAddress: string): BoardOrientation {
     if(myAddress === match.opponent){
      return 'black';
     }
     return 'white';
 }
-export function getPieceType (piece: string): PieceType {
+function getPieceType (piece: string): PieceType {
     return Array.from(piece)[1] as PieceType;
 }
-export function getPieceColor (piece: string): PieceColor {
+function getPieceColor (piece: string): PieceColor {
     return Array.from(piece)[0] as PieceColor;
 }
 
-export function isMyPiece(match: MatchInfo, myAddress: string, piece: PieceColor): boolean {
+function isMyPiece(match: MatchInfo, myAddress: string, piece: PieceColor): boolean {
     if(myAddress === match.opponent){
         if (piece === 'b'){
             return true;
@@ -31,7 +33,7 @@ export function isMyPiece(match: MatchInfo, myAddress: string, piece: PieceColor
     return false;
  }
 
-export function isMyTurn(match: MatchInfo, myAddress: string): boolean {
+function isMyTurn(match: MatchInfo, myAddress: string): boolean {
    if(match.state === 'Whites' && myAddress === match.challenger){
     return true;
    }
@@ -41,7 +43,7 @@ export function isMyTurn(match: MatchInfo, myAddress: string): boolean {
    return false;
 }
 
-export function statusMsg(match: MatchInfo, myAddress: string): string {
+function statusMsg(match: MatchInfo, myAddress: string): string {
     const status = match.state;
     if(status == 'AwaitingOpponent'){
         return "Awaiting your opponent to accept";
@@ -58,10 +60,17 @@ export function statusMsg(match: MatchInfo, myAddress: string): string {
     return "Waiting your opponent to move";
     
  }
- export function matchHasStarted(match: MatchInfo): boolean {
+function matchHasStarted(match: MatchInfo): boolean {
     const status = match.state;
     if(status == 'AwaitingOpponent'){
         return false;
     }
     return true;    
  }
+
+ function displayErrorExtrinsic(result: ExtrinsicResult){
+    if(!result.success){
+        displayError(result.message);
+    }
+}
+export{boardOrientation, getPieceType, getPieceColor, isMyPiece, isMyTurn,statusMsg, matchHasStarted, displayErrorExtrinsic }

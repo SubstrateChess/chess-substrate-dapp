@@ -14,14 +14,13 @@ export async function make_move(
     callback: ((result: ExtrinsicResult) => void) | undefined = undefined): Promise<() => void> {
     const extrinsic = api.tx.chess.makeMove(matchId, move_fen);
     const unsub = await signAndSend(myAccount.account.address, myAccount.signer, extrinsic, (result) => {
+      // Move fast, to move the piece 
+      callback?.({success: true, message: ""});
       //Back to the main screen if the transaction is in a block (Should be isFinalized??);
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
-          if (method === 'ExtrinsicSuccess') {
-            callback?.({success: true, message: "Match created successfully"});
-          }
           if(method === 'ExtrinsicFailed'){
-            // TODO:Get error message from pallet (metadata)
+            // TODO:Get error message from pallet (metadata) and hanlde respone in the UI
             callback?.({success: false, message: "Error: "+ data.dispatchError.toString()});
           }
         });
@@ -42,7 +41,7 @@ export async function abort_match(
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
           if (method === 'ExtrinsicSuccess') {
-            callback?.({success: true, message: "Match created successfully"});
+            callback?.({success: true, message: "Match aborted successfully"});
           }
           if(method === 'ExtrinsicFailed'){
             // TODO:Get error message from pallet (metadata)
@@ -66,7 +65,7 @@ export async function abandon_match(
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
           if (method === 'ExtrinsicSuccess') {
-            callback?.({success: true, message: "Match created successfully"});
+            callback?.({success: true, message: "Match abandoned successfully"});
           }
           if(method === 'ExtrinsicFailed'){
             // TODO:Get error message from pallet (metadata)
@@ -117,7 +116,7 @@ export async function join_match(
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
           if (method === 'ExtrinsicSuccess') {
-            callback?.({success: true, message: "Match created successfully"});
+            callback?.({success: true, message: "Match joined successfully"});
           }
           if(method === 'ExtrinsicFailed'){
             // TODO:Get error message from pallet (metadata)

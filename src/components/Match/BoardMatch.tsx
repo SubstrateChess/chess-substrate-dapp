@@ -3,13 +3,14 @@ import {Chess, ChessInstance, Move} from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
 import { Match } from '../../types/chessTypes';
-import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg } from './boardHelper';
-import { displayError, displayMessage } from '../../utils/errors';
+import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic } from './boardHelper';
+import { displayError, displayMessage, displaySuccess } from '../../utils/errors';
 import { useApi } from '../../contexts/apiProvider';
 import { abandon_match, abort_match, make_move } from '../../chain/game';
-import { SigningAccount } from 'src/types/walletTypes';
+import { SigningAccount } from '../../types/walletTypes';
 import { Square } from 'react-chessboard/dist/chessboard/types';
 import { getMatch } from '../../chain/matches';
+import { ExtrinsicResult } from '../../types/apiTypes';
 
 interface MatchProps{
   game: Match;
@@ -27,6 +28,7 @@ export const BoardMatch = (props: MatchProps) => {
 
 
   React.useEffect(() => {
+    console.log("load board");
     const chess = new Chess();
     chess.load(matchInfo.match.board);
     setGame(chess);
@@ -37,7 +39,8 @@ export const BoardMatch = (props: MatchProps) => {
   React.useEffect(() => {
     async function move() {
       if (movePiece !== ""){
-        await performMove(game);
+        console.log("moved piece");
+        await performMove();
         setMovePiece("");
       }
     }
@@ -45,38 +48,44 @@ export const BoardMatch = (props: MatchProps) => {
   }, [movePiece !== ""]);
 
   const finishGame = async () => {
+    //TODO: Modal to user if is sure
     if (api){
       if(matchHasStarted(matchInfo.match)){
         // Abandom game and lose
-        await abandon_match(api, props.myAccount, props.game.match_id,  (result) => {
-          console.log(result);
-          displayMessage("You have lost by abandon");
+        await abandon_match(api, props.myAccount, props.game.match_id,  (result: ExtrinsicResult) => {
+          displayErrorExtrinsic(result);
           props.setGameOnGoing(false);
         });
       }
       else {
         // Abort game
-        await abort_match(api, props.myAccount, props.game.match_id,  (result) => {
-          displayMessage("Match aborted successfully");
+        await abort_match(api, props.myAccount, props.game.match_id,  (result: ExtrinsicResult) => {
+          displayErrorExtrinsic(result);
           props.setGameOnGoing(false);
         });
       }
     }
   }
   const updateMatch = async () => {
+    console.log("update match");
     setGame(game);
     setFen(game.fen());
     if (api){
       const refresh_match = await getMatch(api, matchInfo.match_id);
-      setMatchInfo(refresh_match);
+      if(refresh_match){
+        setMatchInfo(refresh_match);
+      }
+      else{
+        displayMessage("Game Over");
+        props.setGameOnGoing(false);
+      }
     }
   }
-  const performMove = async (game: ChessInstance) => {
+  const performMove = async () => {
     try{
       if(api){
         await make_move(api, props.myAccount, props.game.match_id, movePiece,  async (result) => {
           await updateMatch();
-          //setStatusMessage(statusMsg(match, props.myAccount.account.address));
           return true;
         });
       }
