@@ -1,7 +1,6 @@
 import { QueryableStorage } from '@polkadot/api/types';
 import { StorageKey } from '@polkadot/types';
 import { Option } from '@polkadot/types-codec';
-import { AnyJson } from '@polkadot/types-codec/types';
 import type { } from '@polkadot/types/lookup';
 import { Match, MatchInfo, MatchState, MatchStyle } from '../types/chessTypes';
 

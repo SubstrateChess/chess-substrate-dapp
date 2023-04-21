@@ -4,7 +4,7 @@ import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
 import { Match } from '../../types/chessTypes';
 import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic } from './boardHelper';
-import { displayError, displayMessage, displaySuccess } from '../../utils/errors';
+import { displayError, displayMessage, displaySuccess } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
 import { abandon_match, abort_match, make_move } from '../../chain/game';
 import { SigningAccount } from '../../types/walletTypes';

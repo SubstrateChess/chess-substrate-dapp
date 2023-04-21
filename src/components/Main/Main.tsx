@@ -18,7 +18,6 @@ export function Main(): JSX.Element {
   React.useEffect(() => {
     async function getMyMatches() {
       if (api !== null && isReady && connectedAccount !== undefined){
-        console.log("get matches list");
         const matches = await getUserMatches(api, connectedAccount.account.address);
         console.log(matches);
         if (matches.length > 0) {

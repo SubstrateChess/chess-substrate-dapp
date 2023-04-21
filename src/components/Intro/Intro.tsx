@@ -3,13 +3,12 @@ import BN from 'bn.js';
 import { Button } from '../../ui/Button';
 import { CheckBox } from '../../ui/CheckBox';
 import { SigningAccount } from '../../types/walletTypes';
-import { displayError, displaySuccess } from '../../utils/errors';
+import { displayError } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
 import { MatchState, MatchStyle } from '../../types/chessTypes';
 import { create_match, join_match } from '../../chain/game';
 import { checkCreateMatchForm, checkJoinMatchForm, displayResultExtrinsicMessage } from './introHelper';
 import { ExtrinsicResult } from '../../types/apiTypes';
-import { getMatch } from '../../chain/matches';
 
 const whitesImg = new URL(
     '../../../assets/images/whites.png',

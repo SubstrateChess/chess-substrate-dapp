@@ -1,5 +1,5 @@
 import { ExtrinsicResult } from "../../types/apiTypes";
-import { displaySuccess, displayError } from "../../utils/errors";
+import {  displayError } from "../../utils/messages";
 
 function checkCreateMatchForm(addressRival: string, checkBoxSelected: number){
     if(addressRival === ""){

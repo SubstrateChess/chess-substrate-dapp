@@ -1,8 +1,8 @@
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
-import {Piece, PieceColor, PieceType} from "chess.js";
-import { MatchInfo, MatchState } from "../../types/chessTypes";
+import { PieceColor, PieceType} from "chess.js";
+import { MatchInfo } from "../../types/chessTypes";
 import { ExtrinsicResult } from "../../types/apiTypes";
-import { displayError } from "../../utils/errors";
+import { displayError } from "../../utils/messages";
 
 function boardOrientation(match: MatchInfo, myAddress: string): BoardOrientation {
     if(myAddress === match.opponent){
