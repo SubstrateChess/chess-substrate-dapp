@@ -1,3 +1,4 @@
+import 'react-toastify/dist/ReactToastify.css';
 import {toast } from 'react-toastify';
 
 export function displayError(message: string) {

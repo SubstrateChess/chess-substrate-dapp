@@ -77,11 +77,8 @@ function parseMatches(
     query: QueryableStorage<'promise'>;
   }, hash: string): Promise<Match | null> {
     const response = await api.query.chess.matches(hash);
-    if(response){
-      return parseIndividualMatchResponse(hash, response.toHuman());
-    }
-    else {
+    if(response.isEmpty){
       return null;
     }
-    
+    return parseIndividualMatchResponse(hash, response.toHuman());
   }

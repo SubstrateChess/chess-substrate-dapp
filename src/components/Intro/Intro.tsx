@@ -9,6 +9,7 @@ import { MatchState, MatchStyle } from '../../types/chessTypes';
 import { create_match, join_match } from '../../chain/game';
 import { checkCreateMatchForm, checkJoinMatchForm, displayResultExtrinsicMessage } from './introHelper';
 import { ExtrinsicResult } from '../../types/apiTypes';
+import { getMatch } from '../../chain/matches';
 
 const whitesImg = new URL(
     '../../../assets/images/whites.png',
@@ -66,6 +67,7 @@ export function Intro(props: IntroProps): JSX.Element {
     }
     checkJoinMatchForm(matchId);
     try{
+      //await getMatch(api, "0xf08a79d5c69c182905d6057ef6c43dec71387f172d31f4e3ea442de922d73777")
       await join_match(api, props.myAccount, matchId, (result: ExtrinsicResult) => {
           displayResultExtrinsicMessage(result);
           props.setGameOnGoing(true);

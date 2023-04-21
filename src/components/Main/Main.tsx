@@ -25,15 +25,9 @@ export function Main(): JSX.Element {
           setGameOnGoing(true);
           setMatch(matches[0]);
         }
-        else{
-          setGameOnGoing(false);
-        }
       }
-      
-     
     }
     getMyMatches();
-    // setGame(new Chess());
   }, [connectedAccount, gameOnGoing]);
 
   return (

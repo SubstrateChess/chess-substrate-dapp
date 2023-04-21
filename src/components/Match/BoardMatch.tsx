@@ -25,21 +25,24 @@ export const BoardMatch = (props: MatchProps) => {
   const [matchInfo, setMatchInfo] = React.useState<Match>(props.game);
 
   const { api } = useApi();
+  let initialized = false;
 
 
   React.useEffect(() => {
-    console.log("load board");
-    const chess = new Chess();
-    chess.load(matchInfo.match.board);
-    setGame(chess);
-    setFen(matchInfo.match.board);
-    setStatusMessage(statusMsg(matchInfo.match, props.myAccount.account.address));
+    if (!initialized) {
+      initialized = true
+      const chess = new Chess();
+      chess.load(matchInfo.match.board);
+      setGame(chess);
+      setFen(matchInfo.match.board);
+      setStatusMessage(statusMsg(matchInfo.match, props.myAccount.account.address));
+    }
+    
   }, []);
 
   React.useEffect(() => {
     async function move() {
       if (movePiece !== ""){
-        console.log("moved piece");
         await performMove();
         setMovePiece("");
       }
@@ -67,7 +70,6 @@ export const BoardMatch = (props: MatchProps) => {
     }
   }
   const updateMatch = async () => {
-    console.log("update match");
     setGame(game);
     setFen(game.fen());
     if (api){
@@ -123,6 +125,9 @@ export const BoardMatch = (props: MatchProps) => {
         return false;
       }
       else{
+        if(gameCopy.in_checkmate()){
+          displaySuccess("Checkmate, you won!");
+        }
         setGame(gameCopy);
         setMovePiece(sourceSquare.toString() + targetSquare.toString());
         return true;
@@ -136,17 +141,17 @@ export const BoardMatch = (props: MatchProps) => {
 
   return (
     <>
-      <div className="flex flex-col gap-4 md:w-[480px]">
+     <br />
       <span className="px-2 text-center text-body">
         {statusMessage}
       </span>
        <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} 
+          boardWidth={480}
           boardOrientation={boardOrientation(matchInfo.match, props.myAccount.account.address)} 
           customBoardStyle={{
           borderRadius: "4px",
           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
         }}/>
-    </div>
     <br />
     <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
       <Button onClick={finishGame}>
