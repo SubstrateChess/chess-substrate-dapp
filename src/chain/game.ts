@@ -5,6 +5,7 @@ import { SigningAccount } from "../types/walletTypes";
 import { MatchStyle } from "../types/chessTypes";
 import BN from "bn.js";
 import { ExtrinsicResult } from "../types/apiTypes";
+import { parseErrorName } from "./utils";
 
 export async function make_move(
     api: ApiPromise, 
@@ -20,8 +21,8 @@ export async function make_move(
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
           if(method === 'ExtrinsicFailed'){
-            // TODO:Get error message from pallet (metadata) and hanlde respone in the UI
-            callback?.({success: false, message: "Error: "+ data.dispatchError.toString()});
+            let errorMsg = parseErrorName(api, data);
+            callback?.({success: false, message: errorMsg});
           }
         });
         unsub();
@@ -44,8 +45,8 @@ export async function abort_match(
             callback?.({success: true, message: "Match aborted successfully"});
           }
           if(method === 'ExtrinsicFailed'){
-            // TODO:Get error message from pallet (metadata)
-            callback?.({success: false, message: "Error: "+ data.dispatchError.toString()});
+            let errorMsg = parseErrorName(api, data);
+            callback?.({success: false, message: errorMsg});
           }
         });
         unsub();
@@ -68,8 +69,8 @@ export async function abandon_match(
             callback?.({success: true, message: "Match abandoned successfully"});
           }
           if(method === 'ExtrinsicFailed'){
-            // TODO:Get error message from pallet (metadata)
-            callback?.({success: false, message: "Error: "+ data.dispatchError.toString()});
+            let errorMsg = parseErrorName(api, data);
+            callback?.({success: false, message: errorMsg});
           }
         });
         unsub();
@@ -95,8 +96,8 @@ export async function create_match(
             callback?.({success: true, message: "Match created successfully"});
           }
           if(method === 'ExtrinsicFailed'){
-            // TODO:Get error message from pallet (metadata)
-            callback?.({success: false, message: "Error: "+ data.dispatchError.toString()});
+            let errorMsg = parseErrorName(api, data);
+            callback?.({success: false, message: errorMsg});
           }
         });
         unsub();
@@ -119,8 +120,8 @@ export async function join_match(
             callback?.({success: true, message: "Match joined successfully"});
           }
           if(method === 'ExtrinsicFailed'){
-            // TODO:Get error message from pallet (metadata)
-            callback?.({success: false, message: "Error: "+ data.dispatchError.toString()});
+            let errorMsg = parseErrorName(api, data);
+            callback?.({success: false, message: errorMsg});
           }
         });
         unsub();
