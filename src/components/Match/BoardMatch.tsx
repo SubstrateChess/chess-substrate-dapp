@@ -11,9 +11,11 @@ import { SigningAccount } from '../../types/walletTypes';
 import { Square } from 'react-chessboard/dist/chessboard/types';
 import { getMatch } from '../../chain/matches';
 import { ExtrinsicResult } from '../../types/apiTypes';
+import { PendingMatch } from '../../ui/PendingMatch';
 
 interface MatchProps{
   game: Match;
+  matches: Match[];
   myAccount: SigningAccount;
   setGameOnGoing: (gameOnGoing: boolean) => void;
 }
@@ -145,19 +147,33 @@ export const BoardMatch = (props: MatchProps) => {
       <span className="px-2 text-center text-body">
         {statusMessage}
       </span>
-       <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} 
-          boardWidth={480}
-          boardOrientation={boardOrientation(matchInfo.match, props.myAccount.account.address)} 
-          customBoardStyle={{
-          borderRadius: "4px",
-          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
-        }}/>
-    <br />
-    <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
-      <Button onClick={finishGame}>
-        {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
-      </Button>
-    </div>
+      <div className="flex w-full gap-32 px-6 xl:px-28">
+        <div className="flex w-full items-center gap-2 px-4 lg:gap-4 lg:px-0">
+          <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} 
+            boardWidth={480}
+            boardOrientation={boardOrientation(matchInfo.match, props.myAccount.account.address)} 
+            customBoardStyle={{
+            borderRadius: "4px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+          }}/>
+        </div>
+        <div>
+            {props.matches.length > 0 && (
+              props.matches.map((match) => (
+                <>
+                <PendingMatch
+                  key={match.match_id}
+                  currentMatch={props.game}
+                  match={match}
+                  setMatch={updateMatch}
+                  myAddress={props.myAccount.account.address}
+                />
+                <br/>
+                </>
+              ))
+          )}
+        </div>
+      </div>
     </>
   );
 }

@@ -1,5 +1,4 @@
 import { ApiPromise } from "@polkadot/api";
-import { SubmittableResult } from '@polkadot/api';
 import { signAndSend } from "../utils/walletOperations";
 import { SigningAccount } from "../types/walletTypes";
 import { MatchStyle } from "../types/chessTypes";

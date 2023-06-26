@@ -5,11 +5,13 @@ import { BoardMatch } from '../Match/BoardMatch';
 import { Intro } from '../Intro/Intro';
 import { Match } from '../../types/chessTypes';
 import { getUserMatches } from '../../chain/matches';
+import { PendingMatch } from '../../ui/PendingMatch';
 
 
 export function Main(): JSX.Element {
   const [gameOnGoing, setGameOnGoing] = React.useState(false);
   const [match, setMatch] = React.useState<Match | null>(null);
+  const [matches, setMatches] = React.useState<Match[]>([]);
   const { status, isReady ,api } = useApi();
 
   const { connectedAccount } = useAccount();
@@ -23,6 +25,7 @@ export function Main(): JSX.Element {
         if (matches.length > 0) {
           setGameOnGoing(true);
           setMatch(matches[0]);
+          setMatches(matches);
         }
       }
     }
@@ -47,7 +50,7 @@ export function Main(): JSX.Element {
           </span>
         }
         {(gameOnGoing && match && connectedAccount) ? 
-          <BoardMatch game={match} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} /> : 
+          <BoardMatch game={match} matches={matches}myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} /> : 
           <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing}/>
         }
       </div>
