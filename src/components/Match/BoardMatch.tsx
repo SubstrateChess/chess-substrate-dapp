@@ -155,11 +155,15 @@ export const BoardMatch = (props: MatchProps) => {
 
   return (
     <>
-     <br />
       <span className="px-2 text-center text-body">
         {statusMessage}
       </span>
-      <div className="flex w-full gap-32 px-6 xl:px-28">
+      <br />
+      <Button onClick={finishGame}>
+            {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
+      </Button>
+      <br />
+      <div className="text-center text-body">
         <div className="flex w-full items-center gap-2 px-4 lg:gap-4 lg:px-0">
           <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} 
             boardWidth={480}
@@ -168,7 +172,12 @@ export const BoardMatch = (props: MatchProps) => {
             borderRadius: "4px",
             boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
           }}/>
+          
         </div>
+        <br />
+        <span className="text-center font-unbounded text-h5 lg:text-h5">
+         Other Games ⬇️
+        </span>
         <div>
             {props.matches.length > 0 && (
               props.matches.map((match) => (
