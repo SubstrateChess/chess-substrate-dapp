@@ -31,7 +31,6 @@ const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
 interface IntroProps{
   myAccount: SigningAccount;
   setGameOnGoing: (gameOnGoing: boolean) => void;
-  setMatch: (match: Match) => void;
 }
 
 export function Intro(props: IntroProps): JSX.Element {
@@ -83,15 +82,28 @@ export function Intro(props: IntroProps): JSX.Element {
     }
     checkJoinMatchForm(matchId);
     try{
-      //await getMatch(api, "0xf08a79d5c69c182905d6057ef6c43dec71387f172d31f4e3ea442de922d73777")
       await join_match(api, props.myAccount, matchId, (result: ExtrinsicResult) => {
           displayResultExtrinsicMessage(result);
           props.setGameOnGoing(true);
       });
     }
     catch(e: any){
-      //TODO: Handle error, checking inputs
-      console.log(e.message);
+      displayError(e.message);
+    }
+  }
+
+  const joinMatchFromButton = async (match: Match) => {
+    if(!api || !props.myAccount){
+      displayError("Make sure you have you account and network connected");
+      return;
+    }
+    try{
+      await join_match(api, props.myAccount, match.match_id, (result: ExtrinsicResult) => {
+          displayResultExtrinsicMessage(result);
+          props.setGameOnGoing(true);
+      });
+    }
+    catch(e: any){
       displayError(e.message);
     }
   }
@@ -178,7 +190,7 @@ export function Intro(props: IntroProps): JSX.Element {
                   key={match.match_id}
                   currentMatch={{} as Match}
                   match={match}
-                  setMatch={props.setMatch}
+                  setMatch={joinMatchFromButton}
                   myAddress={props.myAccount.account.address}
                 />
                 <br/>

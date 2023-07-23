@@ -18,6 +18,7 @@ interface MatchProps{
   matches: Match[];
   myAccount: SigningAccount;
   setGameOnGoing: (gameOnGoing: boolean) => void;
+  changeMatch: (match: Match) => void;
 }
 export const BoardMatch = (props: MatchProps) => {
   const [game, setGame] = React.useState(new Chess());
@@ -85,6 +86,17 @@ export const BoardMatch = (props: MatchProps) => {
       }
     }
   }
+
+  const changeMatch = async (match: Match) => {
+    props.changeMatch(match);
+    setMatchInfo(match);
+    const chess = new Chess();
+    chess.load(matchInfo.match.board);
+    setGame(chess);
+    setFen(matchInfo.match.board);
+    setStatusMessage(statusMsg(matchInfo.match, props.myAccount.account.address));
+  }
+
   const performMove = async () => {
     try{
       if(api){
@@ -165,7 +177,7 @@ export const BoardMatch = (props: MatchProps) => {
                   key={match.match_id}
                   currentMatch={props.game}
                   match={match}
-                  setMatch={updateMatch}
+                  setMatch={changeMatch}
                   myAddress={props.myAccount.account.address}
                 />
                 <br/>

@@ -50,8 +50,8 @@ export function Main(): JSX.Element {
           </span>
         }
         {connectedAccount && ((gameOnGoing && match) ? 
-          <BoardMatch game={match} matches={matches} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} /> : 
-          <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} setMatch={setMatch}/>
+          <BoardMatch game={match} matches={matches} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} changeMatch={setMatch} /> : 
+          <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing}/>
         )}
       </div>
     </div>
