@@ -49,10 +49,10 @@ export function Main(): JSX.Element {
             ❌ To play run the Chess Parachain locally first ❌
           </span>
         }
-        {(gameOnGoing && match && connectedAccount) ? 
-          <BoardMatch game={match} matches={matches}myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} /> : 
-          <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing}/>
-        }
+        {connectedAccount && ((gameOnGoing && match) ? 
+          <BoardMatch game={match} matches={matches} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} /> : 
+          <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} setMatch={setMatch}/>
+        )}
       </div>
     </div>
     </main>

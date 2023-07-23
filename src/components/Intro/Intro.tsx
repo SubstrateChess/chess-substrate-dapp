@@ -5,10 +5,12 @@ import { CheckBox } from '../../ui/CheckBox';
 import { SigningAccount } from '../../types/walletTypes';
 import { displayError } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
-import { MatchState, MatchStyle } from '../../types/chessTypes';
+import { Match, MatchState, MatchStyle } from '../../types/chessTypes';
 import { create_match, join_match } from '../../chain/game';
 import { checkCreateMatchForm, checkJoinMatchForm, displayResultExtrinsicMessage } from './introHelper';
 import { ExtrinsicResult } from '../../types/apiTypes';
+import { getAwaitingUserMatches } from '../../chain/matches';
+import { PendingMatch } from '../../ui/PendingMatch';
 
 const whitesImg = new URL(
     '../../../assets/images/whites.png',
@@ -27,16 +29,31 @@ const BET_ASSET_ID = 200;
 const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
 
 interface IntroProps{
-  myAccount: SigningAccount | undefined;
+  myAccount: SigningAccount;
   setGameOnGoing: (gameOnGoing: boolean) => void;
+  setMatch: (match: Match) => void;
 }
 
 export function Intro(props: IntroProps): JSX.Element {
   const [checkBoxSelected, setCheckBoxSelected] = React.useState(-1);
   const [addressRival, setAddressRival] = React.useState("");
   const [matchId, setMatchId] = React.useState("");
+  const [matches, setMatches] = React.useState<Match[]>([]);
 
-  const { api } = useApi();
+  const { isReady ,api } = useApi();
+
+  React.useEffect(() => {
+    async function getAwaitingMatches() {
+      if (api !== null && isReady && props.myAccount !== undefined){
+        const matches = await getAwaitingUserMatches(api, props.myAccount.account.address);
+        if (matches.length > 0) {
+          setMatches(matches);
+        }
+      }
+    }
+    getAwaitingMatches();
+    
+  }, []);
 
   const startGame = async () => {
     if(!api || !props.myAccount){
@@ -151,6 +168,23 @@ export function Intro(props: IntroProps): JSX.Element {
             </Button>
           </div>
           <img width={200} src={blacksImg} alt="black pieces" />
+        </div>
+
+        <div>
+            {matches.length > 0 && (
+              matches.map((match) => (
+                <>
+                <PendingMatch
+                  key={match.match_id}
+                  currentMatch={{} as Match}
+                  match={match}
+                  setMatch={props.setMatch}
+                  myAddress={props.myAccount.account.address}
+                />
+                <br/>
+                </>
+              ))
+          )}
         </div>
       </div>
       </>

@@ -53,6 +53,30 @@ function parseMatches(
     return parseMatches(await api.query.chess.matches.entries(), userAccount);
   }
 
+  function parseAwaitingMatches(
+    matches: [
+      StorageKey<[any]>,
+      Option<any>
+    ][], userAccount: String
+  ): Match[] {
+    const userMatches: Match[] = [];
+    matches.map((matchData) => {
+      const key = matchData[0].args[0];
+      const matchInfo = parseMatch(matchData[1].unwrap());
+      if(matchInfo.challenger === userAccount || (matchInfo.opponent === userAccount && matchInfo.state === 'AwaitingOpponent')){
+        userMatches.push({match_id: key.toString(), match: matchInfo});
+      }
+    });
+    return userMatches;
+  }
+
+  export async function getAwaitingUserMatches(api: {
+    query: QueryableStorage<'promise'>;
+  }, userAccount: String): Promise<Match[]> {
+    return parseAwaitingMatches(await api.query.chess.matches.entries(), userAccount);
+  }
+
+
   function parseIndividualMatchResponse(match_id: string, response: any): Match {
     const match: Match = {
       match_id, 
