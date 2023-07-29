@@ -4,6 +4,7 @@ import { MatchInfo } from "../../types/chessTypes";
 import { ExtrinsicResult } from "../../types/apiTypes";
 import { displayError } from "../../utils/messages";
 
+
 function boardOrientation(match: MatchInfo, myAddress: string): BoardOrientation {
     if(myAddress === match.opponent){
      return 'black';
@@ -73,4 +74,5 @@ function matchHasStarted(match: MatchInfo): boolean {
         displayError(result.message);
     }
 }
+
 export{boardOrientation, getPieceType, getPieceColor, isMyPiece, isMyTurn,statusMsg, matchHasStarted, displayErrorExtrinsic }

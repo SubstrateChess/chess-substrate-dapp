@@ -1,9 +1,11 @@
 import * as React from 'react';
-import {Chess, ChessInstance, Move} from "chess.js";
+import {Chess, Move} from "chess.js";
+import { ApiPromise } from "@polkadot/api";
+import { EventRecord } from "@polkadot/types/interfaces";
 import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
 import { Match } from '../../types/chessTypes';
-import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic } from './boardHelper';
+import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic, queryEvents } from './boardHelper';
 import { displayError, displayMessage, displaySuccess } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
 import { abandon_match, abort_match, make_move } from '../../chain/game';
@@ -39,6 +41,9 @@ export const BoardMatch = (props: MatchProps) => {
       setGame(chess);
       setFen(matchInfo.match.board);
       setStatusMessage(statusMsg(matchInfo.match, props.myAccount.account.address));
+      if (api){
+        queryEvents(api);
+      }
     }
     
   }, []);
@@ -152,6 +157,41 @@ export const BoardMatch = (props: MatchProps) => {
       return false;
     }
   }
+
+  function queryEvents(api: ApiPromise): void {
+    api.query.system.events((events: any) => {
+        // Loop through the Vec<EventRecord>
+        events.forEach((record: EventRecord) => {
+        // Extract the phase, event and the event types
+        const { event, phase } = record;
+        if (event.section === 'chess') {
+            if(event.method === 'MatchStarted'){
+              console.log(`\started`);
+              updateMatch();
+            }
+            else if(event.method === 'MoveExecuted'){
+              console.log(`\tmoved`);
+              updateMatch();
+            }
+            else if(event.method === 'MatchAborted'){
+              displaySuccess("Match Aborted!");
+              console.log(`\t${phase.toString()})`);
+              console.log(`\t\t${event.meta.toString()}`);
+            }
+            else if(event.method === 'MatchWon'){
+              displaySuccess("Match finish!");
+              console.log(`\t${phase.toString()})`);
+              console.log(`\t\t${event.meta.toString()}`);
+            }
+            else if(event.method === 'MatchDrawn'){
+              displaySuccess("Match finish!");
+              console.log(`\t${phase.toString()})`);
+              console.log(`\t\t${event.meta.toString()}`);
+            }
+        }
+        });
+    });
+}
 
   return (
     <>

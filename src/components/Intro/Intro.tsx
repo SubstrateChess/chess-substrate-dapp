@@ -69,8 +69,6 @@ export function Intro(props: IntroProps): JSX.Element {
       });
     }
     catch(e: any){
-      //TODO: Handle error, checking inputs
-      console.log(e.message);
       displayError(e.message);
     }
   }

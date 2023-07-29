@@ -21,7 +21,6 @@ export function Main(): JSX.Element {
     async function getMyMatches() {
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);
-        console.log(matches);
         if (matches.length > 0) {
           setGameOnGoing(true);
           setMatch(matches[0]);
