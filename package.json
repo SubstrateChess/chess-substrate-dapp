@@ -24,13 +24,16 @@
     "@polkadot/extension-inject": "0.46.5",
     "@polkadot/react-identicon": "^3.1.4",
     "@polkadot/types": "^10.3.4",
+    "@tailwindcss/postcss7-compat": "^2.2.17",
+    "@tailwindcss/typography": "^0.5.9",
     "@types/bn.js": "^5.1.1",
     "@types/chess.js": "^0.13.4",
     "chess.js": "1.0.0-beta.6",
     "react": "^18.2.0",
     "react-chessboard": "^4.0.1",
     "react-dom": "^18.2.0",
-    "react-toastify": "^9.1.2"
+    "react-toastify": "^9.1.2",
+    "tailwindcss": "^3.3.3"
   },
   "devDependencies": {
     "@parcel/compressor-brotli": "2.9.3",
@@ -42,8 +45,6 @@
     "@polkadot-onboard/injected-wallets": "0.0.10",
     "@polkadot-onboard/react": "0.0.10",
     "@polkadot-onboard/wallet-connect": "0.0.10",
-    "@tailwindcss/postcss7-compat": "^2.2.17",
-    "@tailwindcss/typography": "0.4.1",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
     "autoprefixer": "^9",
@@ -52,7 +53,6 @@
     "parcel-resolver-fix-ts-esm-shit": "^0.0.1",
     "postcss": "^8.2.1",
     "process": "0.11.10",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typescript": "^5.0.4"
   }
 }
