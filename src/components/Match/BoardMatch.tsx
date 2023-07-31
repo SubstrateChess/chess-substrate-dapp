@@ -4,6 +4,7 @@ import { ApiPromise } from "@polkadot/api";
 import { EventRecord } from "@polkadot/types/interfaces";
 import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
+import { Modal } from '../../ui/Modal';
 import { Match } from '../../types/chessTypes';
 import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic } from './boardHelper';
 import { displayError, displayMessage, displaySuccess } from '../../utils/messages';
@@ -28,6 +29,7 @@ export const BoardMatch = (props: MatchProps) => {
   const [movePiece, setMovePiece] = React.useState("");
   const [statusMessage, setStatusMessage] = React.useState("");
   const [matchInfo, setMatchInfo] = React.useState<Match>(props.game);
+  const [visible, setVisible] = React.useState(false);
 
   const { api } = useApi();
   let initialized = false;
@@ -57,6 +59,14 @@ export const BoardMatch = (props: MatchProps) => {
     }
     move();
   }, [movePiece !== ""]);
+
+  const closeModal = () => {
+    setVisible(false);
+  };
+
+  const openModal = () => {
+    setVisible(true);
+  };
 
   const finishGame = async () => {
     //TODO: Modal to user if is sure
@@ -217,12 +227,26 @@ export const BoardMatch = (props: MatchProps) => {
         {statusMessage}
       </span>
       <br />
-      <Button onClick={finishGame}>
+      <Button onClick={openModal}>
             {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
       </Button>
       <br />
       <div className="text-center text-body">
         <div className="flex w-full items-center gap-2 px-4 lg:gap-4 lg:px-0">
+        <Modal open={visible} onClose={() => closeModal()}>
+          <div className="flex max-h-[90vh] flex-col px-1 py-2">
+            <div className="flex flex-col items-center justify-center">
+              Are you sure you want to finish the game?
+            </div>
+            <br />
+            <div className="flex flex-col items-center justify-center">
+            <Button onClick={finishGame}>
+              {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
+            </Button>
+            </div>
+          </div>
+          
+        </Modal>
           <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} 
             boardWidth={480}
             boardOrientation={boardOrientation(matchInfo.match, props.myAccount.account.address)} 
