@@ -5,7 +5,7 @@ import { EventRecord } from "@polkadot/types/interfaces";
 import { Chessboard } from "react-chessboard";
 import { Button } from '../../ui/Button';
 import { Match } from '../../types/chessTypes';
-import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic, queryEvents } from './boardHelper';
+import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic } from './boardHelper';
 import { displayError, displayMessage, displaySuccess } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
 import { abandon_match, abort_match, make_move } from '../../chain/game';
@@ -64,6 +64,7 @@ export const BoardMatch = (props: MatchProps) => {
       if(matchHasStarted(matchInfo.match)){
         // Abandom game and lose
         await abandon_match(api, props.myAccount, props.game.match_id,  (result: ExtrinsicResult) => {
+          console.log(result);
           displayErrorExtrinsic(result);
           props.setGameOnGoing(false);
         });
@@ -84,6 +85,8 @@ export const BoardMatch = (props: MatchProps) => {
       const refresh_match = await getMatch(api, matchInfo.match_id);
       if(refresh_match){
         setMatchInfo(refresh_match);
+        setFen(refresh_match.match.board);
+        setStatusMessage(statusMsg(refresh_match.match, props.myAccount.account.address));
       }
       else{
         displayMessage("Game Over");
@@ -129,7 +132,7 @@ export const BoardMatch = (props: MatchProps) => {
       return false;
     }
     if(isMyTurn(matchInfo.match, props.myAccount.account.address)){
-      const gameCopy = { ...game };
+      const gameCopy: Chess = game ;
       const m: Move = {
         color: getPieceColor(piece),
         flags: '',
@@ -137,25 +140,34 @@ export const BoardMatch = (props: MatchProps) => {
         san: '',
         from: sourceSquare,
         to: targetSquare,
+        lan: '',
+        before: '',
+        after: ''
       };
-      const move = gameCopy.move(m);
-      if(move === null) {
-        displayError("Invalid move");
-        return false;
-      }
-      else{
-        if(gameCopy.in_checkmate()){
-          displaySuccess("Checkmate, you won!");
+      try {
+          const move = gameCopy.move(m);
+          if(move === null) {
+            displayError("Invalid move");
+            return false;
+          }
+          else{
+            if(gameCopy.isCheckmate()){
+              displaySuccess("Checkmate, you won!");
+            }
+            setGame(gameCopy);
+            setMovePiece(sourceSquare.toString() + targetSquare.toString());
+            return true;
+          }
         }
-        setGame(gameCopy);
-        setMovePiece(sourceSquare.toString() + targetSquare.toString());
-        return true;
+        catch(error){
+          displayError("Invalid move");
+        }
       }
-    }
-    else {
-      displayError("Not your turn to move");
-      return false;
-    }
+        else {
+          displayError("Not your turn to move");
+          return false;
+        }
+      
   }
 
   function queryEvents(api: ApiPromise): void {
@@ -164,14 +176,20 @@ export const BoardMatch = (props: MatchProps) => {
         events.forEach((record: EventRecord) => {
         // Extract the phase, event and the event types
         const { event, phase } = record;
-        if (event.section === 'chess') {
+        const types = event.typeDef;
+        // For the following events the first parameter is the hash of the match, check that is from this match
+        if (event.section === 'chess' && event.data[0].toString() === props.game.match_id.toString()) {
             if(event.method === 'MatchStarted'){
-              console.log(`\started`);
-              updateMatch();
+              if (event.data[1].toString() != props.myAccount.account.address) {
+                updateMatch();
+              }
             }
             else if(event.method === 'MoveExecuted'){
-              console.log(`\tmoved`);
-              updateMatch();
+               // Update match in case who make the extrinsic is the oponent
+               if (event.data[1].toString() != props.myAccount.account.address) {
+                displayMessage("The opponent made a move.");
+                updateMatch();
+               }
             }
             else if(event.method === 'MatchAborted'){
               displaySuccess("Match Aborted!");

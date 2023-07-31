@@ -5,13 +5,23 @@ import type { } from '@polkadot/types/lookup';
 import { Match, MatchInfo, MatchState, MatchStyle } from '../types/chessTypes';
 
 function parseState(matchState: any): MatchState {
-  if(matchState.isOnGoing && matchState.asOnGoing.isWhites){
+  let state = matchState;
+  if(matchState.isOnGoing == undefined) {
+    state = JSON.parse(JSON.stringify(matchState));
+  }
+  if(state.isOnGoing && state.asOnGoing.isWhites){
     return 'Whites' as MatchState;
   }
-  if(matchState.isOnGoing && matchState.asOnGoing.isBlacks){
+  if(state.isOnGoing && state.asOnGoing.isBlacks){
     return 'Blacks' as MatchState;
   }
-  return matchState.toString() as MatchState;
+  if(state.OnGoing === 'Whites'){
+    return 'Whites' as MatchState;
+  }
+  if(state.OnGoing === 'Blacks'){
+    return 'Blacks' as MatchState;
+  }
+  return state.toString() as MatchState;
 }
 function parseMatch(
   matchData: any
