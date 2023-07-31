@@ -69,12 +69,10 @@ export const BoardMatch = (props: MatchProps) => {
   };
 
   const finishGame = async () => {
-    //TODO: Modal to user if is sure
     if (api){
       if(matchHasStarted(matchInfo.match)){
         // Abandom game and lose
         await abandon_match(api, props.myAccount, props.game.match_id,  (result: ExtrinsicResult) => {
-          console.log(result);
           displayErrorExtrinsic(result);
           props.setGameOnGoing(false);
         });
@@ -185,8 +183,7 @@ export const BoardMatch = (props: MatchProps) => {
         // Loop through the Vec<EventRecord>
         events.forEach((record: EventRecord) => {
         // Extract the phase, event and the event types
-        const { event, phase } = record;
-        const types = event.typeDef;
+        const { event } = record;
         // For the following events the first parameter is the hash of the match, check that is from this match
         if (event.section === 'chess' && event.data[0].toString() === props.game.match_id.toString()) {
             if(event.method === 'MatchStarted'){
@@ -203,18 +200,19 @@ export const BoardMatch = (props: MatchProps) => {
             }
             else if(event.method === 'MatchAborted'){
               displaySuccess("Match Aborted!");
-              console.log(`\t${phase.toString()})`);
-              console.log(`\t\t${event.meta.toString()}`);
             }
             else if(event.method === 'MatchWon'){
-              displaySuccess("Match finish!");
-              console.log(`\t${phase.toString()})`);
-              console.log(`\t\t${event.meta.toString()}`);
+              if (event.data[1].toString() != props.myAccount.account.address) {
+                 displaySuccess("Match finish, you lost!");
+              }
+              else {
+                  displaySuccess("Match finish, you won!");
+              }
+              props.setGameOnGoing(false);
             }
             else if(event.method === 'MatchDrawn'){
-              displaySuccess("Match finish!");
-              console.log(`\t${phase.toString()})`);
-              console.log(`\t\t${event.meta.toString()}`);
+              displaySuccess("Match finish, drawn!");
+              props.setGameOnGoing(false);
             }
         }
         });
