@@ -4,7 +4,7 @@ import { Button } from './Button';
 import { Card } from './Card';
 
 interface PendingMatchProps{
-    currentMatch: Match;
+    currentMatch: Match | null;
     match: Match;
     myAddress: string;
     setMatch: (match: Match) => void;
@@ -30,7 +30,7 @@ export function PendingMatch(props: PendingMatchProps) {
             </div>
             <div className="flex flex-col items-center justify-center">
                   <h6 className="text-xl center"> Style: {props.match.match.style} </h6>
-                  {props.currentMatch == props.match && (
+                  {props.currentMatch && props.currentMatch == props.match && (
                     <span className="text-green-500"> (Current Match)</span>
                   )}
             </div>

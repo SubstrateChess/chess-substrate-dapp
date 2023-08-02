@@ -5,6 +5,8 @@ import { BoardMatch } from '../Match/BoardMatch';
 import { Intro } from '../Intro/Intro';
 import { Match } from '../../types/chessTypes';
 import { getUserMatches } from '../../chain/matches';
+import { Matches } from '../Match/Matches';
+import { Button } from '../../ui/Button';
 
 const whitesImg = new URL(
   '../../../assets/images/whites.png',
@@ -14,7 +16,8 @@ const whitesImg = new URL(
 
 export function Main(): JSX.Element {
   const [gameOnGoing, setGameOnGoing] = React.useState(false);
-  const [match, setMatch] = React.useState<Match | null>(null);
+  const [isShowingMatches, showMatches] = React.useState(false);
+  //const [match, setMatch] = React.useState<Match | null>(null);
   const [matches, setMatches] = React.useState<Match[]>([]);
   const { status, isReady ,api } = useApi();
 
@@ -26,8 +29,6 @@ export function Main(): JSX.Element {
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);
         if (matches.length > 0) {
-          setGameOnGoing(true);
-          setMatch(matches[0]);
           setMatches(matches);
         }
       }
@@ -39,11 +40,20 @@ export function Main(): JSX.Element {
     <main className="flex w-full flex-auto flex-col items-center justify-start gap-4 pt-12 md:pt-10 lg:gap-8">
       <div className="mt-8 flex w-full flex-col items-center justify-center gap-12 py-12">
       <div className="flex w-full flex-col items-center gap-0 px-8 lg:gap-0 lg:px-0">
-        <span className="text-center font-unbounded text-h3 lg:text-h1">
-          {gameOnGoing ? "Match" : "Start a Match"}
-        </span>
+        {!gameOnGoing &&
+          <span className="text-center font-unbounded text-h4 lg:text-h2">
+            Start a Match
+          </span>
+        }
+        {matches.length > 0 &&
+          <div>
+            <br />
+            <Button onClick={() => showMatches(true)}>
+              {"Show your Matches"}
+            </Button>
+          </div>
+        }
         {!connectedAccount && 
-
           <span className="px-1 text-center text-body">
             Connect your wallet to play
             <img width={500} src={whitesImg} alt="whites pieces" />
@@ -54,8 +64,8 @@ export function Main(): JSX.Element {
             ❌ To play run the Chess Parachain locally first ❌
           </span>
         }
-        {connectedAccount && ((gameOnGoing && match) ? 
-          <BoardMatch game={match} matches={matches} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} changeMatch={setMatch} /> : 
+        {connectedAccount && ((isShowingMatches) ? 
+          <Matches matches={matches} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} showMatches={showMatches}/> : 
           <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing}/>
         )}
       </div>

@@ -102,7 +102,6 @@ export function Intro(props: IntroProps): JSX.Element {
       });
     }
     catch(e: any){
-      console.log("fail");
       displayError(e.message);
     }
   }

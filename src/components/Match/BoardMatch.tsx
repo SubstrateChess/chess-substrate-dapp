@@ -36,7 +36,6 @@ export const BoardMatch = (props: MatchProps) => {
 
 
   React.useEffect(() => {
-    console.log(matchInfo.match);
     if (!initialized) {
       initialized = true
       const chess = new Chess();
@@ -105,16 +104,6 @@ export const BoardMatch = (props: MatchProps) => {
         props.setGameOnGoing(false);
       }
     }
-  }
-
-  const changeMatch = async (match: Match) => {
-    props.changeMatch(match);
-    setMatchInfo(match);
-    const chess = new Chess();
-    chess.load(matchInfo.match.board);
-    setGame(chess);
-    setFen(matchInfo.match.board);
-    setStatusMessage(statusMsg(matchInfo.match, props.myAccount.account.address));
   }
 
   const performMove = async () => {
@@ -255,28 +244,6 @@ export const BoardMatch = (props: MatchProps) => {
             boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
           }}/>
           
-        </div>
-        <br />
-        {props.matches.length > 1 && (
-          <span className="text-center font-unbounded text-h5 lg:text-h5">
-          Other Games ⬇️
-          </span>
-        )}
-        <div>
-            {props.matches.length > 1 && (
-              props.matches.map((match) => (
-                <div key={match.match_id}>
-                <PendingMatch
-                  key={match.match_id}
-                  currentMatch={props.game}
-                  match={match}
-                  setMatch={changeMatch}
-                  myAddress={props.myAccount.account.address}
-                />
-                <br/>
-                </div>
-              ))
-          )}
         </div>
       </div>
     </>
