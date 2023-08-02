@@ -5,7 +5,7 @@ import { CheckBox } from '../../ui/CheckBox';
 import { SigningAccount } from '../../types/walletTypes';
 import { displayError } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
-import { Match, MatchState, MatchStyle } from '../../types/chessTypes';
+import { Match, MatchStyle } from '../../types/chessTypes';
 import { create_match, join_match } from '../../chain/game';
 import { checkCreateMatchForm, checkJoinMatchForm, displayResultExtrinsicMessage } from './introHelper';
 import { ExtrinsicResult } from '../../types/apiTypes';
@@ -173,12 +173,22 @@ export function Intro(props: IntroProps): JSX.Element {
                     onChange={(event) => setMatchId(event.target.value)}
                 />
             </span>
+            
             <Button onClick={joinGame}>
                 Join Game
             </Button>
           </div>
           <img width={200} src={blacksImg} alt="black pieces" />
         </div>
+
+        <div className="flex w-full flex-col gap-1">
+            <span className="text-h6 font-semibold">Instructions</span>
+            <span className="text-body-2">
+              You can start a match indicating the opponent address and the style of the match or join a match against someone that has already challenged you indicating the Match ID of the match you want to join. 
+              To play you need minimum amount of the tokens of the network to pay fees.
+              You also need the asset 200 to bet against the opponent.
+            </span>
+          </div>
 
         <div>
             {matches.length > 0 && (
