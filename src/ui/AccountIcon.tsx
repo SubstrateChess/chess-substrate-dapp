@@ -31,7 +31,7 @@ export function AccountIcon({
         />
       </div>
       <div className={`${textClassName || ''}`}>
-        {stringShorten(btnTitle, 5)}
+        {btnTitle}
       </div>
     </div>
   );

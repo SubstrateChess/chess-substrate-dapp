@@ -16,11 +16,11 @@ export function PendingMatch(props: PendingMatchProps) {
         props.setMatch(props.match);
     }
     return (
-        <Card className={`shadow-sd flex w-full flex-col gap-2 p-6 md:gap-4`}>
-            <div className="flex cursor-pointer items-start justify-between">
-              <div className="flex flex-col items-start">
-                <h2 className="text-xl capitalize">{props.match.match.state}</h2>
-                <p>Against:</p>
+        <Card className={`shadow-sd flex w-full flex-col gap-4 p-8 md:gap-5`}>
+            <div className="flex cursor-pointer items-center justify-between">
+              <div className="flex flex-col items-center">
+                <h2 className="text-xl">Status</h2>
+                <h2 className="text-xl capitalize font-semibold">{props.match.match.state}</h2>
                 <AccountIcon
                   address={props.myAddress === props.match.match.opponent ? props.match.match.challenger : props.match.match.opponent}
                   size={24}
@@ -28,17 +28,19 @@ export function PendingMatch(props: PendingMatchProps) {
                 />
               </div>
             </div>
-            <div>
-              Style: {props.match.match.style} 
-              <br />
-              {props.currentMatch == props.match && (
-                <span className="text-green-500"> (Current Match)</span>
-              )}
+            <div className="flex flex-col items-center justify-center">
+                  <h6 className="text-xl center"> Style: {props.match.match.style} </h6>
+                  {props.currentMatch == props.match && (
+                    <span className="text-green-500"> (Current Match)</span>
+                  )}
             </div>
+            <br/>
             {props.currentMatch != props.match && (
-                <Button onClick={startMatch}>
-                    Play
-                </Button>
+              <div className="flex flex-col items-center justify-center">
+                  <Button onClick={startMatch}>
+                      Play Game
+                  </Button>
+              </div>
             )}
         </Card>
     );

@@ -102,6 +102,7 @@ export function Intro(props: IntroProps): JSX.Element {
       });
     }
     catch(e: any){
+      console.log("fail");
       displayError(e.message);
     }
   }
@@ -189,6 +190,12 @@ export function Intro(props: IntroProps): JSX.Element {
               You also need the asset 200 to bet against the opponent.
             </span>
           </div>
+
+          {matches.length > 0 && (
+            <span className="text-center font-unbounded text-h5 lg:text-h5">
+            Awaiting Games ⬇️
+            </span>
+          )}
 
         <div>
             {matches.length > 0 && (

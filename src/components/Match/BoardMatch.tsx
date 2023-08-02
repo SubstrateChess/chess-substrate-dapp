@@ -93,6 +93,9 @@ export const BoardMatch = (props: MatchProps) => {
       const refresh_match = await getMatch(api, matchInfo.match_id);
       if(refresh_match){
         setMatchInfo(refresh_match);
+        const chess = new Chess();
+        chess.load(refresh_match.match.board);
+        setGame(chess);
         setFen(refresh_match.match.board);
         setStatusMessage(statusMsg(refresh_match.match, props.myAccount.account.address));
       }
@@ -140,7 +143,7 @@ export const BoardMatch = (props: MatchProps) => {
       return false;
     }
     if(isMyTurn(matchInfo.match, props.myAccount.account.address)){
-      const gameCopy: Chess = game ;
+      const gameCopy: Chess = game;
       const m: Move = {
         color: getPieceColor(piece),
         flags: '',
@@ -187,9 +190,7 @@ export const BoardMatch = (props: MatchProps) => {
         // For the following events the first parameter is the hash of the match, check that is from this match
         if (event.section === 'chess' && event.data[0].toString() === props.game.match_id.toString()) {
             if(event.method === 'MatchStarted'){
-              if (event.data[1].toString() != props.myAccount.account.address) {
                 updateMatch();
-              }
             }
             else if(event.method === 'MoveExecuted'){
                // Update match in case who make the extrinsic is the oponent
@@ -199,20 +200,20 @@ export const BoardMatch = (props: MatchProps) => {
                }
             }
             else if(event.method === 'MatchAborted'){
-              displaySuccess("Match Aborted!");
+              displayMessage("Match Aborted!");
             }
             else if(event.method === 'MatchWon'){
               if (event.data[1].toString() != props.myAccount.account.address) {
-                 displaySuccess("Match finish, you lost!");
+                displayError("Match finish, you lost!");
               }
               else {
-                  displaySuccess("Match finish, you won!");
+                displaySuccess("Match finish, you won!");
               }
-              props.setGameOnGoing(false);
+              //props.setGameOnGoing(false);
             }
             else if(event.method === 'MatchDrawn'){
-              displaySuccess("Match finish, drawn!");
-              props.setGameOnGoing(false);
+              displayMessage("Match finish, drawn!");
+              //props.setGameOnGoing(false);
             }
         }
         });
@@ -255,11 +256,13 @@ export const BoardMatch = (props: MatchProps) => {
           
         </div>
         <br />
-        <span className="text-center font-unbounded text-h5 lg:text-h5">
-         Other Games ⬇️
-        </span>
+        {props.matches.length > 1 && (
+          <span className="text-center font-unbounded text-h5 lg:text-h5">
+          Other Games ⬇️
+          </span>
+        )}
         <div>
-            {props.matches.length > 0 && (
+            {props.matches.length > 1 && (
               props.matches.map((match) => (
                 <>
                 <PendingMatch

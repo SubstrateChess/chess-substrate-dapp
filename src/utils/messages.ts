@@ -1,5 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
-import {toast } from 'react-toastify';
+import {toast} from 'react-toastify';
+
 
 export function displayError(message: string) {
     toast.error(message, {
@@ -11,6 +12,7 @@ export function displayError(message: string) {
         draggable: true,
         progress: undefined,
         theme: "light",
+        toastId: message,
       });
 }
 export function displayMessage(message: string) {
@@ -23,6 +25,7 @@ export function displayMessage(message: string) {
       draggable: true,
       progress: undefined,
       theme: "light",
+      toastId: message,
     });
 }
 export function displaySuccess(message: string) {
@@ -35,5 +38,6 @@ export function displaySuccess(message: string) {
       draggable: true,
       progress: undefined,
       theme: "light",
+      toastId: message,
     });
 }
