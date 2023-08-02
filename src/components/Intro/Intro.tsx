@@ -123,6 +123,7 @@ export function Intro(props: IntroProps): JSX.Element {
                         setCheckBoxSelected(0);
                     }}
                     disabled={false}
+                    key={MatchStyle[0]}
                 />
                 <CheckBox
                     title={MatchStyle[1]}
@@ -131,6 +132,7 @@ export function Intro(props: IntroProps): JSX.Element {
                         setCheckBoxSelected(1);
                     }}
                     disabled={false}
+                    key={MatchStyle[1]}
                 />
                 <CheckBox
                     title={MatchStyle[2]}
@@ -139,6 +141,7 @@ export function Intro(props: IntroProps): JSX.Element {
                         setCheckBoxSelected(2);
                     }}
                     disabled={false}
+                    key={MatchStyle[2]}
                 />
                 <CheckBox
                     title={MatchStyle[3]}
@@ -147,6 +150,7 @@ export function Intro(props: IntroProps): JSX.Element {
                         setCheckBoxSelected(3);
                     }}
                     disabled={false}
+                    key={MatchStyle[3]}
                 />
             </div>
             <input
@@ -200,7 +204,7 @@ export function Intro(props: IntroProps): JSX.Element {
         <div>
             {matches.length > 0 && (
               matches.map((match) => (
-                <>
+                <div key={match.match_id}>
                 <PendingMatch
                   key={match.match_id}
                   currentMatch={{} as Match}
@@ -209,7 +213,7 @@ export function Intro(props: IntroProps): JSX.Element {
                   myAddress={props.myAccount.account.address}
                 />
                 <br/>
-                </>
+                </div>
               ))
           )}
         </div>

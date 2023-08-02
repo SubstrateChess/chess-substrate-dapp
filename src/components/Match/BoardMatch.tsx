@@ -36,6 +36,7 @@ export const BoardMatch = (props: MatchProps) => {
 
 
   React.useEffect(() => {
+    console.log(matchInfo.match);
     if (!initialized) {
       initialized = true
       const chess = new Chess();
@@ -209,11 +210,11 @@ export const BoardMatch = (props: MatchProps) => {
               else {
                 displaySuccess("Match finish, you won!");
               }
-              //props.setGameOnGoing(false);
+              props.setGameOnGoing(false);
             }
             else if(event.method === 'MatchDrawn'){
               displayMessage("Match finish, drawn!");
-              //props.setGameOnGoing(false);
+              props.setGameOnGoing(false);
             }
         }
         });
@@ -264,7 +265,7 @@ export const BoardMatch = (props: MatchProps) => {
         <div>
             {props.matches.length > 1 && (
               props.matches.map((match) => (
-                <>
+                <div key={match.match_id}>
                 <PendingMatch
                   key={match.match_id}
                   currentMatch={props.game}
@@ -273,7 +274,7 @@ export const BoardMatch = (props: MatchProps) => {
                   myAddress={props.myAccount.account.address}
                 />
                 <br/>
-                </>
+                </div>
               ))
           )}
         </div>
