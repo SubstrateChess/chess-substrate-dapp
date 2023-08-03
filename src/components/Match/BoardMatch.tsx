@@ -212,27 +212,18 @@ export const BoardMatch = (props: MatchProps) => {
 
   return (
     <>
-      <span className="px-2 text-center text-body">
-        {statusMessage}
+      <span className="text-h5 font-semibolds">
+        Status: {statusMessage}
       </span>
-      <br />
-      <Button onClick={openModal}>
-            {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
-      </Button>
-      <br />
+      
       <div className="text-center text-body">
-        <div className="flex w-full items-center gap-2 px-4 lg:gap-4 lg:px-0">
+        <div className="flex flex-col w-full items-center gap-2 px-4 lg:gap-4 lg:px-0">
         <Modal open={visible} onClose={() => closeModal()}>
-          <div className="flex max-h-[90vh] flex-col px-1 py-2">
-            <div className="flex flex-col items-center justify-center">
-              Are you sure you want to finish the game?
-            </div>
-            <br />
-            <div className="flex flex-col items-center justify-center">
-            <Button onClick={finishGame}>
-              {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
-            </Button>
-            </div>
+          <div className="flex flex-col content-between space-y-4 items-center justify-center max-h-[90vh] px-1 py-2">
+              <p>Are you sure you want to finish the game?</p>
+              <Button onClick={finishGame}>
+                {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
+              </Button>
           </div>
           
         </Modal>
@@ -246,6 +237,10 @@ export const BoardMatch = (props: MatchProps) => {
           
         </div>
       </div>
+      <Button onClick={openModal}>
+            {matchHasStarted(matchInfo.match) ? "Abandon Game" : "Abort Game"}
+      </Button>
+      <br />
     </>
   );
 }

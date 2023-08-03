@@ -16,11 +16,16 @@ export const Matches = (props: MatchProps) => {
 
   const goBack = () => {
     props.showMatches(false);
+    props.setGameOnGoing(false);
   };
+
+  const playMatch = (match: Match) => {
+    setCurrentMatch(match);
+    props.setGameOnGoing(true);
+  }
 
   return (
     <>
-        <br />
         <Button onClick={goBack} variant='outline'>
             Create new Match
         </Button>
@@ -29,17 +34,13 @@ export const Matches = (props: MatchProps) => {
         )}
         {currentMatch && props.matches.length > 0 && (
           <span className="text-center font-unbounded text-h5 lg:text-h5">
-          Other Matches ⬇️
+            Other Matches ⬇️
           </span>
         )}
         {!currentMatch && props.matches.length > 0 && (
-          <>
-            <br />
             <span className="text-center font-unbounded text-h5 lg:text-h5 space-between">
-            Your Current Matches ⬇️
+              Your Current Matches ⬇️
             </span>
-            <br />
-          </>
         )}
         <div>
             {props.matches.length > 0 && (
@@ -49,7 +50,7 @@ export const Matches = (props: MatchProps) => {
                   key={match.match_id}
                   currentMatch={currentMatch}
                   match={match}
-                  setMatch={setCurrentMatch}
+                  setMatch={playMatch}
                   myAddress={props.myAccount.account.address}
                 />
                 <br/>

@@ -44,7 +44,7 @@ export function Main(): JSX.Element {
   return (
     <main className="flex w-full flex-auto flex-col items-center justify-start gap-4 pt-12 md:pt-10 lg:gap-8">
       <div className="mt-8 flex w-full flex-col items-center justify-center gap-12 py-12">
-      <div className="flex w-full flex-col items-center gap-0 px-8 lg:gap-0 lg:px-0">
+      <div className="flex w-full flex-col items-center content-between space-y-4 gap-0 px-8 lg:gap-0 lg:px-0">
         {!gameOnGoing &&
           <span className="text-center font-unbounded text-h4 lg:text-h2">
             {isShowingMatches ? "Your Matches" : "Start a Match"}
