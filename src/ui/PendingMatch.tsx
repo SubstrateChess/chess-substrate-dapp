@@ -1,4 +1,4 @@
-import { Match } from '../types/chessTypes';
+import { Match, MatchInfo } from '../types/chessTypes';
 import { AccountIcon } from './AccountIcon';
 import { Button } from './Button';
 import { Card } from './Card';
@@ -15,12 +15,21 @@ export function PendingMatch(props: PendingMatchProps) {
     const startMatch = () => {
         props.setMatch(props.match);
     }
+
+    const parseStatus = (matchInfo: MatchInfo) => {
+      if(matchInfo.state === "AwaitingOpponent" && props.myAddress === matchInfo.opponent){
+        return "Waiting for you to accept";
+      }
+      else if(matchInfo.state === "AwaitingOpponent" && props.myAddress === matchInfo.challenger){
+        return "Waiting for the opponent to accept";
+      }
+      return matchInfo.state;
+    }
     return (
-        <Card className={`shadow-sd flex w-full flex-col gap-4 p-8 md:gap-5`}>
+        <Card className={`shadow-sd flex w-full flex-col gap-2 p-6 md:gap-4  items-center`}>
             <div className="flex cursor-pointer items-center justify-between">
               <div className="flex flex-col items-center">
-                <h2 className="text-xl">Status</h2>
-                <h2 className="text-xl capitalize font-semibold">{props.match.match.state}</h2>
+                <h2 className="text-xl capitalize font-semibold">{parseStatus(props.match.match)}</h2>
                 <AccountIcon
                   address={props.myAddress === props.match.match.opponent ? props.match.match.challenger : props.match.match.opponent}
                   size={24}
@@ -34,11 +43,12 @@ export function PendingMatch(props: PendingMatchProps) {
                     <span className="text-green-500"> (Current Match)</span>
                   )}
             </div>
-            <br/>
             {props.currentMatch != props.match && (
               <div className="flex flex-col items-center justify-center">
-                  <Button onClick={startMatch}>
-                      Play Game
+                  <Button onClick={startMatch} variant='primary'>
+                      {(props.match.match.state === "AwaitingOpponent" && 
+                        props.myAddress === props.match.match.opponent) ? "Join Game" : "Play Game"
+                      }
                   </Button>
               </div>
             )}

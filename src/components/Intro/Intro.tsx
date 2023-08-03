@@ -112,7 +112,6 @@ export function Intro(props: IntroProps): JSX.Element {
         <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
           <img width={200} src={whitesImg} alt="whites pieces" />
           <div className="flex w-full flex-col gap-1">
-            <span className="text-h6 font-semibold">Start a Match</span>
             <span className="text-body-2">
             <div className="sticky top-44 mb-4 flex flex-row justify-between bg-bg-default/80 px-3 py-3 backdrop-blur-md lg:px-8">
                 <CheckBox
@@ -196,7 +195,7 @@ export function Intro(props: IntroProps): JSX.Element {
 
           {matches.length > 0 && (
             <span className="text-center font-unbounded text-h5 lg:text-h5">
-            Awaiting Games ⬇️
+            Awaiting Matches ⬇️
             </span>
           )}
 

@@ -13,6 +13,11 @@ const whitesImg = new URL(
   import.meta.url
 ).toString();
 
+const blacksImg = new URL(
+  '../../../assets/images/blacks.png',
+  import.meta.url
+).toString();
+
 
 export function Main(): JSX.Element {
   const [gameOnGoing, setGameOnGoing] = React.useState(false);
@@ -42,16 +47,21 @@ export function Main(): JSX.Element {
       <div className="flex w-full flex-col items-center gap-0 px-8 lg:gap-0 lg:px-0">
         {!gameOnGoing &&
           <span className="text-center font-unbounded text-h4 lg:text-h2">
-            Start a Match
+            {isShowingMatches ? "Your Matches" : "Start a Match"}
           </span>
         }
-        {matches.length > 0 &&
-          <div>
-            <br />
-            <Button onClick={() => showMatches(true)}>
-              {"Show your Matches"}
+        {(matches.length > 0 && !isShowingMatches) &&
+         <div className="flex items-center gap-4 px-4  lg:gap-8 lg:px-0">
+         <div className="flex w-full flex-col gap-1">
+           <span className="text-h6 font-semibold">
+             You have ongoing matches
+           </span>
+           <Button onClick={() => showMatches(true)} variant="primary">
+              My Matches
             </Button>
-          </div>
+         </div>
+         <img width={200} src={blacksImg} alt="black pieces" />
+       </div>
         }
         {!connectedAccount && 
           <span className="px-1 text-center text-body">

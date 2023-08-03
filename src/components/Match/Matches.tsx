@@ -20,22 +20,23 @@ export const Matches = (props: MatchProps) => {
 
   return (
     <>
-        <Button onClick={goBack}>
-            {"Create a new Match"}
+        <br />
+        <Button onClick={goBack} variant='outline'>
+            Create new Match
         </Button>
         {currentMatch && (
             <BoardMatch game={currentMatch} matches={props.matches} myAccount={props.myAccount} setGameOnGoing={props.setGameOnGoing} changeMatch={setCurrentMatch} />
         )}
         {currentMatch && props.matches.length > 0 && (
           <span className="text-center font-unbounded text-h5 lg:text-h5">
-          Other Games ⬇️
+          Other Matches ⬇️
           </span>
         )}
         {!currentMatch && props.matches.length > 0 && (
           <>
             <br />
             <span className="text-center font-unbounded text-h5 lg:text-h5 space-between">
-            Your Current Games ⬇️
+            Your Current Matches ⬇️
             </span>
             <br />
           </>
