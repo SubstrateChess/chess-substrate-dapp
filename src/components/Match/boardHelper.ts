@@ -47,7 +47,7 @@ function isMyTurn(match: MatchInfo, myAddress: string): boolean {
 function statusMsg(match: MatchInfo, myAddress: string): string {
     const status = match.state;
     if(status == 'AwaitingOpponent'){
-        return "Awaiting your opponent to accept";
+        return "Awaiting for your opponent to accept";
     }
     if (status === 'Drawn'){
         return "Match has ended with a drawn";
@@ -58,7 +58,7 @@ function statusMsg(match: MatchInfo, myAddress: string): string {
     if(isMyTurn(match, myAddress)){
         return "Your turn to move"; 
     }
-    return "Waiting your opponent to move";
+    return "Waiting for your opponent to move";
     
  }
 function matchHasStarted(match: MatchInfo): boolean {

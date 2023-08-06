@@ -76,7 +76,7 @@ export function Main(): JSX.Element {
         }
         {connectedAccount && ((isShowingMatches) ? 
           <Matches matches={matches} myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} showMatches={showMatches}/> : 
-          <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing}/>
+          <Intro myAccount={connectedAccount} setGameOnGoing={setGameOnGoing} showMatches={showMatches}/>
         )}
       </div>
     </div>

@@ -27,7 +27,7 @@ export const Matches = (props: MatchProps) => {
   return (
     <>
         <Button onClick={goBack} variant='outline'>
-            Create new Match
+            Back Home
         </Button>
         {currentMatch && (
             <BoardMatch game={currentMatch} matches={props.matches} myAccount={props.myAccount} setGameOnGoing={props.setGameOnGoing} changeMatch={setCurrentMatch} />

@@ -31,6 +31,7 @@ const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
 interface IntroProps{
   myAccount: SigningAccount;
   setGameOnGoing: (gameOnGoing: boolean) => void;
+  showMatches: (isShowingMatches: boolean) => void;
 }
 
 export function Intro(props: IntroProps): JSX.Element {
@@ -66,6 +67,7 @@ export function Intro(props: IntroProps): JSX.Element {
           (result: ExtrinsicResult) => {
             displayResultExtrinsicMessage(result);
             props.setGameOnGoing(true);
+            props.showMatches(true);
       });
     }
     catch(e: any){
@@ -83,6 +85,7 @@ export function Intro(props: IntroProps): JSX.Element {
       await join_match(api, props.myAccount, matchId, (result: ExtrinsicResult) => {
           displayResultExtrinsicMessage(result);
           props.setGameOnGoing(true);
+          props.showMatches(true);
       });
     }
     catch(e: any){
@@ -99,6 +102,7 @@ export function Intro(props: IntroProps): JSX.Element {
       await join_match(api, props.myAccount, match.match_id, (result: ExtrinsicResult) => {
           displayResultExtrinsicMessage(result);
           props.setGameOnGoing(true);
+          props.showMatches(true);
       });
     }
     catch(e: any){
