@@ -22,17 +22,19 @@ const blacksImg = new URL(
 export function Main(): JSX.Element {
   const [gameOnGoing, setGameOnGoing] = React.useState(false);
   const [isShowingMatches, showMatches] = React.useState(false);
-  //const [match, setMatch] = React.useState<Match | null>(null);
   const [matches, setMatches] = React.useState<Match[]>([]);
   const { status, isReady ,api } = useApi();
 
   const { connectedAccount } = useAccount();
-  
+  let initialized = false;
 
+  //TODO: When showMatches go to false, get MyMatches too
   React.useEffect(() => {
     async function getMyMatches() {
+      console.log("in");
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);
+        initialized = true;
         if (matches.length > 0) {
           setMatches(matches);
         }
@@ -40,6 +42,22 @@ export function Main(): JSX.Element {
     }
     getMyMatches();
   }, [connectedAccount, gameOnGoing]);
+
+  React.useEffect(() => {
+    async function getMyMatches() {
+      console.log("een");
+      setMatches([]);
+      if (api !== null && isReady && connectedAccount !== undefined){
+        const matches = await getUserMatches(api, connectedAccount.account.address);
+        if (matches.length > 0) {
+          setMatches(matches);
+        }
+      }
+    }
+    
+     getMyMatches();
+
+  }, [!isShowingMatches]);
 
   return (
     <main className="flex w-full flex-auto flex-col items-center justify-start gap-4 pt-12 md:pt-10 lg:gap-8">
