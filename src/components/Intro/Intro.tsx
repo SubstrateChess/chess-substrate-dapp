@@ -1,5 +1,6 @@
 import * as React from 'react';
 import BN from 'bn.js';
+import DotLoader from "react-spinners/ClipLoader";
 import { Button } from '../../ui/Button';
 import { CheckBox } from '../../ui/CheckBox';
 import { SigningAccount } from '../../types/walletTypes';
@@ -39,6 +40,7 @@ export function Intro(props: IntroProps): JSX.Element {
   const [addressRival, setAddressRival] = React.useState("");
   const [matchId, setMatchId] = React.useState("");
   const [matches, setMatches] = React.useState<Match[]>([]);
+  const [loading, setLoading] = React.useState(false);
 
   const { isReady ,api } = useApi();
 
@@ -61,10 +63,11 @@ export function Intro(props: IntroProps): JSX.Element {
       return;
     }
     checkCreateMatchForm(addressRival,checkBoxSelected);
-    
     try{
+      setLoading(true);
       await create_match(api, props.myAccount, addressRival, MatchStyle[checkBoxSelected] as MatchStyle, BET_ASSET_ID, BET_ASSET_DEPOSIT, 
           (result: ExtrinsicResult) => {
+            setLoading(false);
             if(!result.success){
               displayError("Error creating the match: " + result.message);
             }
@@ -75,7 +78,8 @@ export function Intro(props: IntroProps): JSX.Element {
       });
     }
     catch(e: any){
-      displayError("hereee");
+      setLoading(false);
+      displayError(e.message);
       props.setGameOnGoing(false);
     }
   }
@@ -87,7 +91,9 @@ export function Intro(props: IntroProps): JSX.Element {
     }
     checkJoinMatchForm(matchId);
     try{
+      setLoading(true);
       await join_match(api, props.myAccount, matchId, (result: ExtrinsicResult) => {
+        setLoading(false);
         if(!result.success){
           displayError("Error joining the match: " + result.message);
         }
@@ -98,7 +104,7 @@ export function Intro(props: IntroProps): JSX.Element {
       });
     }
     catch(e: any){
-      displayError("hereee2");
+      setLoading(false);
       displayError(e.message);
       props.setGameOnGoing(false);
     }
@@ -110,6 +116,7 @@ export function Intro(props: IntroProps): JSX.Element {
       return;
     }
     try{
+      setLoading(true);
       await join_match(api, props.myAccount, match.match_id, (result: ExtrinsicResult) => {
         if(!result.success){
           displayError("Error joining the match: " + result.message);
@@ -121,13 +128,20 @@ export function Intro(props: IntroProps): JSX.Element {
       });
     }
     catch(e: any){
-      displayError("hereee3");
+      setLoading(false);
       displayError(e.message);
     }
   }
   
   return (
     <>
+      {loading &&
+        <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
+          <DotLoader color="#e6007a" size={100}/>
+          <span className="text-h6 font-semibold">Loading...</span>
+        </div>
+      }
+      {!loading &&
       <div className="flex w-full flex-col gap-8 md:w-[640px]">
         <div className="flex items-center gap-4 px-4 lg:gap-8 lg:px-0">
           <img width={200} src={whitesImg} alt="whites pieces" />
@@ -236,6 +250,7 @@ export function Intro(props: IntroProps): JSX.Element {
           )}
         </div>
       </div>
+      }
       </>
   );
 }

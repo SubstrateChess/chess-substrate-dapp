@@ -30,7 +30,7 @@ export const Matches = (props: MatchProps) => {
             Back Home
         </Button>
         {currentMatch && (
-            <BoardMatch game={currentMatch} matches={props.matches} myAccount={props.myAccount} setGameOnGoing={props.setGameOnGoing} changeMatch={setCurrentMatch} />
+            <BoardMatch game={currentMatch} matches={props.matches} myAccount={props.myAccount} setGameOnGoing={props.setGameOnGoing} showMatches={props.showMatches} />
         )}
         {currentMatch && props.matches.length > 0 && (
           <span className="text-center font-unbounded text-h5 lg:text-h5">
