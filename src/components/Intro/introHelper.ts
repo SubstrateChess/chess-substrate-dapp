@@ -19,14 +19,5 @@ function checkJoinMatchForm(matchId: string,){
       }
 }
 
-function displayResultExtrinsicMessage(result: ExtrinsicResult){
-    if(!result.success){
-        displayError(result.message);
-    }
-    //No need for display success message, the user will be redirected to the main screen
-    // }else{
-    //     displaySuccess(result.message);
-    // }
-}
 
-export { checkCreateMatchForm, checkJoinMatchForm, displayResultExtrinsicMessage}
+export { checkCreateMatchForm, checkJoinMatchForm}

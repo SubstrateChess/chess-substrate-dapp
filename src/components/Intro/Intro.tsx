@@ -7,7 +7,7 @@ import { displayError } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
 import { Match, MatchStyle } from '../../types/chessTypes';
 import { create_match, join_match } from '../../chain/game';
-import { checkCreateMatchForm, checkJoinMatchForm, displayResultExtrinsicMessage } from './introHelper';
+import { checkCreateMatchForm, checkJoinMatchForm } from './introHelper';
 import { ExtrinsicResult } from '../../types/apiTypes';
 import { getAwaitingUserMatches } from '../../chain/matches';
 import { PendingMatch } from '../../ui/PendingMatch';
@@ -65,13 +65,18 @@ export function Intro(props: IntroProps): JSX.Element {
     try{
       await create_match(api, props.myAccount, addressRival, MatchStyle[checkBoxSelected] as MatchStyle, BET_ASSET_ID, BET_ASSET_DEPOSIT, 
           (result: ExtrinsicResult) => {
-            displayResultExtrinsicMessage(result);
-            props.setGameOnGoing(true);
-            props.showMatches(true);
+            if(!result.success){
+              displayError("Error creating the match: " + result.message);
+            }
+            else{
+              props.setGameOnGoing(true);
+              props.showMatches(true);
+            }
       });
     }
     catch(e: any){
-      displayError(e.message);
+      displayError("hereee");
+      props.setGameOnGoing(false);
     }
   }
 
@@ -83,13 +88,19 @@ export function Intro(props: IntroProps): JSX.Element {
     checkJoinMatchForm(matchId);
     try{
       await join_match(api, props.myAccount, matchId, (result: ExtrinsicResult) => {
-          displayResultExtrinsicMessage(result);
+        if(!result.success){
+          displayError("Error joining the match: " + result.message);
+        }
+        else{
           props.setGameOnGoing(true);
           props.showMatches(true);
+        }
       });
     }
     catch(e: any){
+      displayError("hereee2");
       displayError(e.message);
+      props.setGameOnGoing(false);
     }
   }
 
@@ -100,12 +111,17 @@ export function Intro(props: IntroProps): JSX.Element {
     }
     try{
       await join_match(api, props.myAccount, match.match_id, (result: ExtrinsicResult) => {
-          displayResultExtrinsicMessage(result);
+        if(!result.success){
+          displayError("Error joining the match: " + result.message);
+        }
+        else{
           props.setGameOnGoing(true);
           props.showMatches(true);
+        }
       });
     }
     catch(e: any){
+      displayError("hereee3");
       displayError(e.message);
     }
   }

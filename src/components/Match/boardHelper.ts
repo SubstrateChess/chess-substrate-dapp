@@ -71,6 +71,7 @@ function matchHasStarted(match: MatchInfo): boolean {
 
  function displayErrorExtrinsic(result: ExtrinsicResult){
     if(!result.success){
+        console.log("here4");
         displayError(result.message);
     }
 }
