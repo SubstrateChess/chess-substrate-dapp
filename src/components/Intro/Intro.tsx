@@ -26,8 +26,8 @@ const blacksImg = new URL(
 const MatchStyle: string[] = ["Bullet", "Blitz", "Rapid", "Daily"]; // 1 minute, 5min , 15min , 1 days
 
 //TODO: Allow user to specify its own asset for betting
-const BET_ASSET_ID = 200;
-const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
+const BET_ASSET_ID = "FREN";
+const BET_ASSET_DEPOSIT = new BN(1_000_000_000);
 
 interface IntroProps{
   myAccount: SigningAccount;

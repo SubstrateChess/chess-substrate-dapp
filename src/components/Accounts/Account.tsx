@@ -15,6 +15,7 @@ const Account = ({
   state?: { isConnected: boolean };
 }) => {
   const { isConnected } = state || {};
+  console.log(address);
   return (
     <ConnectCard
       className="flex flex-nowrap p-1"

@@ -83,7 +83,7 @@ export async function create_match(
     myAccount: SigningAccount, 
     opponent: string,
     style: MatchStyle,
-    betAssetId: number,
+    betAssetId: string,
     betAmount: BN,
     callback: ((result: ExtrinsicResult) => void) | undefined = undefined): Promise<() => void> {
     const extrinsic = api.tx.chess.createMatch(opponent,style,betAssetId,betAmount);

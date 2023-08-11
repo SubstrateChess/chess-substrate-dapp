@@ -26,12 +26,12 @@ export function Main(): JSX.Element {
   const { status, isReady ,api } = useApi();
 
   const { connectedAccount } = useAccount();
+  console.log(connectedAccount);
   let initialized = false;
 
   //TODO: When showMatches go to false, get MyMatches too
   React.useEffect(() => {
     async function getMyMatches() {
-      console.log("in");
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);
         initialized = true;
@@ -45,7 +45,6 @@ export function Main(): JSX.Element {
 
   React.useEffect(() => {
     async function getMyMatches() {
-      console.log("een");
       setMatches([]);
       if (api !== null && isReady && connectedAccount !== undefined){
         const matches = await getUserMatches(api, connectedAccount.account.address);

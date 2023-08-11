@@ -17,6 +17,6 @@ export interface MatchInfo {
     style: MatchStyle
     lastMove: number;
     start: number;
-    betAssetId: number; 
+    betAssetId: string; 
     betAmount: BN;
 }
