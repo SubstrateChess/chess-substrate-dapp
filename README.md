@@ -1,8 +1,8 @@
-# Chess Dapp on Substrate [WIP]
+# Chess Dapp on Substrate
 
 Dapp to play chess on a Substrate based Blockchain that has the [Chess Pallet](https://github.com/SubstrateChess/pallet-chess) integrated.
 
-:warning: Just for demo purposes and still a Work On Progress App. Do not deploy on the mainnet. :warning:
+:warning: Just for demo purposes :warning:
 
 ## Before running the demo
 
