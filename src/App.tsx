@@ -18,29 +18,17 @@ import { APIProvider } from './contexts/apiProvider';
 const APP_NAME = 'Chess Dapp Substrate';
 
 function App(): JSX.Element {
-  let injectedWalletProvider = new InjectedWalletProvider(extensionConfig, APP_NAME);
-  // let walletConnectParams = {
-  //   projectId: 'chess-dapp-substrate',
-  //   //relayUrl: 'ws://127.0.0.1:9944',
-  //   relayUrl: 'wss://ws.gm.bldnodes.org',
-  //   metadata: {
-  //     name: 'Chess Dapp Substrate',
-  //     description: 'Chess Dapp Substrate',
-  //     url: '#',
-  //     icons: ['./logo192.png'],
-  //   },
-  //   chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
-  // };
+  let injectedWalletProvider = new InjectedWalletProvider({}, APP_NAME);
   let walletConnectParams = {
-    projectId: '4fae85e642724ee66587fa9f37b997e2',
-    relayUrl: 'wss://relay.walletconnect.com',
+    projectId: 'chess-dapp-substrate',
+    //relayUrl: 'ws://127.0.0.1:9944',
+    relayUrl: 'wss://ws.gm.bldnodes.org',
     metadata: {
-      name: 'Polkadot Demo',
-      description: 'Polkadot Demo',
+      name: 'Chess Dapp Substrate',
+      description: 'Chess Dapp Substrate',
       url: '#',
-      icons: ['https://walletconnect.com/walletconnect-logo.png'],
+      icons: ['./logo192.png'],
     },
-    chainIds: ['polkadot:e143f23803ac50e8f6f8e62695d1ce9e', 'polkadot:91b171bb158e2d3848fa23a9f1c25182'],
   };
   let walletConnectProvider = new WalletConnectProvider(walletConnectParams, APP_NAME);
   let walletAggregator = new WalletAggregator([injectedWalletProvider, walletConnectProvider]);

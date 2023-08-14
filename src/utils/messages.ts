@@ -16,9 +16,9 @@ export function displayError(message: string) {
       });
 }
 export function displayMessage(message: string) {
-  toast.update(message, {
+  toast(message, {
       position: "bottom-center",
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,

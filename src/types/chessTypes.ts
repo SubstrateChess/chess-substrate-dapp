@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 
-export type MatchState = 'AwaitingOpponent' | 'Whites' |  'Blacks' | 'Won' | 'Drawn';
+export type MatchState = 'AwaitingOpponent' | 'Whites' |  'Blacks' | 'Won' | 'Drawn' | 'Lost';
 
 export type MatchStyle = "Bullet" |  "Blitz" | "Rapid" | "Daily";
 

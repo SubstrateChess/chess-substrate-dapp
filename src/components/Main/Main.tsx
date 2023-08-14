@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useAccount } from '../../contexts/contexts';
 import { useApi } from '../../contexts/apiProvider';
-import { BoardMatch } from '../Match/BoardMatch';
 import { Intro } from '../Intro/Intro';
 import { Match } from '../../types/chessTypes';
 import { getUserMatches } from '../../chain/matches';
 import { Matches } from '../Match/Matches';
 import { Button } from '../../ui/Button';
+import { formatAddressToChain } from '../../utils/accounts';
 
 const whitesImg = new URL(
   '../../../assets/images/whites.png',
@@ -26,14 +26,13 @@ export function Main(): JSX.Element {
   const { status, isReady ,api } = useApi();
 
   const { connectedAccount } = useAccount();
-  console.log(connectedAccount);
   let initialized = false;
 
-  //TODO: When showMatches go to false, get MyMatches too
   React.useEffect(() => {
     async function getMyMatches() {
       if (api !== null && isReady && connectedAccount !== undefined){
-        const matches = await getUserMatches(api, connectedAccount.account.address);
+        const formattedAddress = formatAddressToChain(connectedAccount.account.address);
+        const matches = await getUserMatches(api, formattedAddress);
         initialized = true;
         if (matches.length > 0) {
           setMatches(matches);
@@ -41,13 +40,14 @@ export function Main(): JSX.Element {
       }
     }
     getMyMatches();
-  }, [connectedAccount, gameOnGoing]);
+  }, [connectedAccount, gameOnGoing, api]);
 
   React.useEffect(() => {
     async function getMyMatches() {
       setMatches([]);
       if (api !== null && isReady && connectedAccount !== undefined){
-        const matches = await getUserMatches(api, connectedAccount.account.address);
+        const formattedAddress = formatAddressToChain(connectedAccount.account.address);
+        const matches = await getUserMatches(api, formattedAddress);
         if (matches.length > 0) {
           setMatches(matches);
         }
@@ -56,7 +56,7 @@ export function Main(): JSX.Element {
     
      getMyMatches();
 
-  }, [!isShowingMatches]);
+  }, [!isShowingMatches, api]);
 
   return (
     <main className="flex w-full flex-auto flex-col items-center justify-start gap-4 pt-12 md:pt-10 lg:gap-8">

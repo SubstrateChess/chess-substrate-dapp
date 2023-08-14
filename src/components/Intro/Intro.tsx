@@ -12,6 +12,7 @@ import { checkCreateMatchForm, checkJoinMatchForm } from './introHelper';
 import { ExtrinsicResult } from '../../types/apiTypes';
 import { getAwaitingUserMatches } from '../../chain/matches';
 import { PendingMatch } from '../../ui/PendingMatch';
+import { formatAddressToChain } from '../../utils/accounts';
 
 const whitesImg = new URL(
     '../../../assets/images/whites.png',
@@ -47,7 +48,8 @@ export function Intro(props: IntroProps): JSX.Element {
   React.useEffect(() => {
     async function getAwaitingMatches() {
       if (api !== null && isReady && props.myAccount !== undefined){
-        const matches = await getAwaitingUserMatches(api, props.myAccount.account.address);
+        const formattedAddress = formatAddressToChain(props.myAccount.account.address);
+        const matches = await getAwaitingUserMatches(api, formattedAddress);
         if (matches.length > 0) {
           setMatches(matches);
         }
@@ -55,7 +57,7 @@ export function Intro(props: IntroProps): JSX.Element {
     }
     getAwaitingMatches();
     
-  }, []);
+  }, [api]);
 
   const startGame = async () => {
     if(!api || !props.myAccount){
@@ -242,7 +244,7 @@ export function Intro(props: IntroProps): JSX.Element {
                   currentMatch={{} as Match}
                   match={match}
                   setMatch={joinMatchFromButton}
-                  myAddress={props.myAccount.account.address}
+                  myAddress={formatAddressToChain(props.myAccount.account.address)}
                 />
                 <br/>
                 </div>
