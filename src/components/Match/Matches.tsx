@@ -4,6 +4,7 @@ import { SigningAccount } from '../../types/walletTypes';
 import { PendingMatch } from '../../ui/PendingMatch';
 import { BoardMatch } from './BoardMatch';
 import { Button } from '../../ui/Button';
+import { formatAddressToChain } from '../../utils/accounts';
 
 interface MatchProps{
   matches: Match[];
@@ -51,7 +52,7 @@ export const Matches = (props: MatchProps) => {
                   currentMatch={currentMatch}
                   match={match}
                   setMatch={playMatch}
-                  myAddress={props.myAccount.account.address}
+                  myAddress={formatAddressToChain(props.myAccount.account.address)}
                 />
                 <br/>
                 </div>

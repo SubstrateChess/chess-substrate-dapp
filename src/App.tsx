@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { PolkadotWalletsContextProvider } from '@polkadot-onboard/react';
+import { WalletConnectConfiguration } from '@polkadot-onboard/wallet-connect';
 import { WalletAggregator } from '@polkadot-onboard/core';
 import { InjectedWalletProvider } from '@polkadot-onboard/injected-wallets';
 import { WalletConnectProvider } from '@polkadot-onboard/wallet-connect';
-import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,10 +18,11 @@ import { APIProvider } from './contexts/apiProvider';
 const APP_NAME = 'Chess Dapp Substrate';
 
 function App(): JSX.Element {
-  let injectedWalletProvider = new InjectedWalletProvider(extensionConfig, APP_NAME);
+  let injectedWalletProvider = new InjectedWalletProvider({}, APP_NAME);
   let walletConnectParams = {
     projectId: 'chess-dapp-substrate',
-    relayUrl: 'ws://127.0.0.1:9944',
+    //relayUrl: 'ws://127.0.0.1:9944',
+    relayUrl: 'wss://ws.gm.bldnodes.org',
     metadata: {
       name: 'Chess Dapp Substrate',
       description: 'Chess Dapp Substrate',
