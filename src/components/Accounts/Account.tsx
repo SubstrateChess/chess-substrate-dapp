@@ -2,7 +2,6 @@ import Identicon from '@polkadot/react-identicon';
 import { stringShorten } from '@polkadot/util';
 import { DisconnectIcon } from '../../ui/Icons';
 import { ConnectCard } from '../../ui/ConnectCard';
-import { formatAddressToChain } from '../../utils/accounts';
 
 const Account = ({
   name,
@@ -24,14 +23,14 @@ const Account = ({
       <div className="m-1 flex items-center justify-center">
         <Identicon
           style={{ cursor: 'unset' }}
-          value={formatAddressToChain(address)}
+          value={address}
           theme="polkadot"
           size={32}
         />
       </div>
       <div className="m-1 flex flex-auto flex-col text-xs">
         <div className="uppercase ">{name}</div>
-        <div>{stringShorten(formatAddressToChain(address), 10)}</div>
+        <div>{stringShorten(address, 10)}</div>
       </div>
       {isConnected && (
         <div className="nowrap m-1 flex flex-row items-center justify-center gap-1 text-xs text-primary">

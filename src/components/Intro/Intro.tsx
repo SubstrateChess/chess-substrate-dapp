@@ -12,7 +12,6 @@ import { checkCreateMatchForm, checkJoinMatchForm } from './introHelper';
 import { ExtrinsicResult } from '../../types/apiTypes';
 import { getAwaitingUserMatches } from '../../chain/matches';
 import { PendingMatch } from '../../ui/PendingMatch';
-import { formatAddressToChain } from '../../utils/accounts';
 
 const whitesImg = new URL(
     '../../../assets/images/whites.png',
@@ -27,8 +26,8 @@ const blacksImg = new URL(
 const MatchStyle: string[] = ["Bullet", "Blitz", "Rapid", "Daily"]; // 1 minute, 5min , 15min , 1 days
 
 //TODO: Allow user to specify its own asset for betting
-const BET_ASSET_ID = "FREN";
-const BET_ASSET_DEPOSIT = new BN(1_000_000_000);
+const BET_ASSET_ID = 200;
+const BET_ASSET_DEPOSIT = new BN(1_000_000_000_000);
 
 interface IntroProps{
   myAccount: SigningAccount;
@@ -48,8 +47,7 @@ export function Intro(props: IntroProps): JSX.Element {
   React.useEffect(() => {
     async function getAwaitingMatches() {
       if (api !== null && isReady && props.myAccount !== undefined){
-        const formattedAddress = formatAddressToChain(props.myAccount.account.address);
-        const matches = await getAwaitingUserMatches(api, formattedAddress);
+        const matches = await getAwaitingUserMatches(api, props.myAccount.account.address);
         if (matches.length > 0) {
           setMatches(matches);
         }
@@ -57,7 +55,7 @@ export function Intro(props: IntroProps): JSX.Element {
     }
     getAwaitingMatches();
     
-  }, [api]);
+  }, []);
 
   const startGame = async () => {
     if(!api || !props.myAccount){
@@ -224,8 +222,8 @@ export function Intro(props: IntroProps): JSX.Element {
             <span className="text-h6 font-semibold">Instructions</span>
             <span className="text-body-2">
               You can start a match indicating the opponent address and the style of the match or join a match against someone that has already challenged you indicating the Match ID of the match you want to join. 
-              To play you need minimum amount of the tokens of the network (FREN) to pay fees on each move.
-              You also need an amount to bet at the beginning of the match which is a MILLIUNIT of FREN.
+              To play you need minimum amount of the tokens of the network to pay fees.
+              You also need the asset 200 to bet against the opponent.
             </span>
           </div>
 
@@ -244,7 +242,7 @@ export function Intro(props: IntroProps): JSX.Element {
                   currentMatch={{} as Match}
                   match={match}
                   setMatch={joinMatchFromButton}
-                  myAddress={formatAddressToChain(props.myAccount.account.address)}
+                  myAddress={props.myAccount.account.address}
                 />
                 <br/>
                 </div>
