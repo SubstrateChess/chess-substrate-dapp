@@ -1,8 +1,8 @@
-# Chess Dapp on Substrate
+# Chess Dapp on Substrate [WIP]
 
 Dapp to play chess on a Substrate based Blockchain that has the [Chess Pallet](https://github.com/SubstrateChess/pallet-chess) integrated.
 
-:warning: Just for demo purposes :warning:
+:warning: Just for demo purposes and still a Work On Progress App. Do not deploy on the mainnet. :warning:
 
 ## Before running the demo
 The main branch works agains the branch https://github.com/SubstrateChess/pallet-chess/tree/gmordie which is the pallet chess refactored for the chain: GMorDie(https://github.com/GMorDIE/gm-chain/).

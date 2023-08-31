@@ -35,7 +35,7 @@ function parseMatch(
         style: matchData.style.toString() as MatchStyle,
         lastMove: matchData.lastMove.toNumber(),
         start: matchData.start.toNumber(),
-        betAssetId: matchData.betCurrencyId.toString(),
+        betAssetId: matchData.betAssetId.toNumber(),
         betAmount: matchData.betAmount.toBn(),
     } as MatchInfo;
 }
@@ -99,7 +99,7 @@ function parseMatches(
         style: response.style.toString() as MatchStyle,
         lastMove: response.lastMove,
         start: response.start,
-        betAssetId: response.betCurrencyId.toString(),
+        betAssetId: response.betAssetId,
         betAmount: response.betAmount,
       } as MatchInfo
     }

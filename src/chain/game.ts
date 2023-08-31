@@ -5,7 +5,6 @@ import { MatchStyle } from "../types/chessTypes";
 import BN from "bn.js";
 import { ExtrinsicResult } from "../types/apiTypes";
 import { parseErrorName } from "./utils";
-import { formatAddressToChain } from "../utils/accounts";
 
 export async function make_move(
     api: ApiPromise, 
@@ -14,16 +13,12 @@ export async function make_move(
     move_fen: String, 
     callback: ((result: ExtrinsicResult) => void) | undefined = undefined): Promise<() => void> {
     const extrinsic = api.tx.chess.makeMove(matchId, move_fen);
-    const formatAddress= formatAddressToChain(myAccount.account.address);
-    const unsub = await signAndSend(formatAddress, myAccount.signer, extrinsic, (result) => {
+    const unsub = await signAndSend(myAccount.account.address, myAccount.signer, extrinsic, (result) => {
       // Move fast, to move the piece 
-      //callback?.({success: true, message: ""});
+      callback?.({success: true, message: ""});
       //Back to the main screen if the transaction is in a block (Should be isFinalized??);
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
-          if (method === 'ExtrinsicSuccess') {
-            callback?.({success: true, message: "Moved"});
-          }
           if(method === 'ExtrinsicFailed'){
             let errorMsg = parseErrorName(api, data);
             callback?.({success: false, message: errorMsg});
@@ -41,8 +36,7 @@ export async function abort_match(
     matchId: string, 
     callback: ((result: ExtrinsicResult) => void) | undefined = undefined): Promise<() => void> {
     const extrinsic = api.tx.chess.abortMatch(matchId);
-    const formatAddress= formatAddressToChain(myAccount.account.address)
-    const unsub = await signAndSend(formatAddress, myAccount.signer, extrinsic, (result) => {
+    const unsub = await signAndSend(myAccount.account.address, myAccount.signer, extrinsic, (result) => {
       //Back to the main screen if the transaction is in a block (Should be isFinalized??);
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
@@ -66,8 +60,7 @@ export async function abandon_match(
     matchId: string, 
     callback: ((result: ExtrinsicResult) => void) | undefined = undefined): Promise<() => void> {
     const extrinsic = api.tx.chess.clearAbandonedMatch(matchId);
-    const formatAddress= formatAddressToChain(myAccount.account.address)
-    const unsub = await signAndSend(formatAddress, myAccount.signer, extrinsic, (result) => {
+    const unsub = await signAndSend(myAccount.account.address, myAccount.signer, extrinsic, (result) => {
       //Back to the main screen if the transaction is in a block (Should be isFinalized??);
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
@@ -90,12 +83,11 @@ export async function create_match(
     myAccount: SigningAccount, 
     opponent: string,
     style: MatchStyle,
-    betAssetId: string,
+    betAssetId: number,
     betAmount: BN,
     callback: ((result: ExtrinsicResult) => void) | undefined = undefined): Promise<() => void> {
     const extrinsic = api.tx.chess.createMatch(opponent,style,betAssetId,betAmount);
-    const formatAddress= formatAddressToChain(myAccount.account.address)
-    const unsub = await signAndSend(formatAddress, myAccount.signer, extrinsic, (result) => {
+    const unsub = await signAndSend(myAccount.account.address, myAccount.signer, extrinsic, (result) => {
       //Back to the main screen if the transaction is in a block (Should be isFinalized??);
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {
@@ -119,8 +111,7 @@ export async function join_match(
     matchId: string,
     callback: ((result: ExtrinsicResult) => void) | undefined = undefined): Promise<() => void> {
     const extrinsic = api.tx.chess.joinMatch(matchId);
-    const formatAddress= formatAddressToChain(myAccount.account.address)
-    const unsub = await signAndSend(formatAddress, myAccount.signer, extrinsic, (result) => {
+    const unsub = await signAndSend(myAccount.account.address, myAccount.signer, extrinsic, (result) => {
       //Back to the main screen if the transaction is in a block (Should be isFinalized??);
       if(result.status.isInBlock){
         result.events.forEach(({ event: { method, data } }: any) => {

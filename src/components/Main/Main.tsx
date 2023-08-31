@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useAccount } from '../../contexts/contexts';
 import { useApi } from '../../contexts/apiProvider';
+import { BoardMatch } from '../Match/BoardMatch';
 import { Intro } from '../Intro/Intro';
 import { Match } from '../../types/chessTypes';
 import { getUserMatches } from '../../chain/matches';
 import { Matches } from '../Match/Matches';
 import { Button } from '../../ui/Button';
-import { formatAddressToChain } from '../../utils/accounts';
 
 const whitesImg = new URL(
   '../../../assets/images/whites.png',
@@ -28,11 +28,12 @@ export function Main(): JSX.Element {
   const { connectedAccount } = useAccount();
   let initialized = false;
 
+  //TODO: When showMatches go to false, get MyMatches too
   React.useEffect(() => {
     async function getMyMatches() {
+      console.log("in");
       if (api !== null && isReady && connectedAccount !== undefined){
-        const formattedAddress = formatAddressToChain(connectedAccount.account.address);
-        const matches = await getUserMatches(api, formattedAddress);
+        const matches = await getUserMatches(api, connectedAccount.account.address);
         initialized = true;
         if (matches.length > 0) {
           setMatches(matches);
@@ -40,14 +41,14 @@ export function Main(): JSX.Element {
       }
     }
     getMyMatches();
-  }, [connectedAccount, gameOnGoing, api]);
+  }, [connectedAccount, gameOnGoing]);
 
   React.useEffect(() => {
     async function getMyMatches() {
+      console.log("een");
       setMatches([]);
       if (api !== null && isReady && connectedAccount !== undefined){
-        const formattedAddress = formatAddressToChain(connectedAccount.account.address);
-        const matches = await getUserMatches(api, formattedAddress);
+        const matches = await getUserMatches(api, connectedAccount.account.address);
         if (matches.length > 0) {
           setMatches(matches);
         }
@@ -56,7 +57,7 @@ export function Main(): JSX.Element {
     
      getMyMatches();
 
-  }, [!isShowingMatches, api]);
+  }, [!isShowingMatches]);
 
   return (
     <main className="flex w-full flex-auto flex-col items-center justify-start gap-4 pt-12 md:pt-10 lg:gap-8">

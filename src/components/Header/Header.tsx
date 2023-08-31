@@ -22,7 +22,7 @@ export function Header(): JSX.Element {
           <div className="hidden h-8 items-center gap-2 md:flex">
             <img className="inline h-full" src={logoUrl} alt="polkadot logo" />
             <div className="h-6 w-[2px] bg-gray-400" />
-            <span className="font-unbounded text-h5">Play Chess on a Substrate Chain</span>
+            <span className="font-unbounded text-h5">Chess on Substrate</span>
           </div>
         </div>
       </Navbar.Brand>

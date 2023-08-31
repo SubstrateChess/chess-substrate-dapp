@@ -1,6 +1,6 @@
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
 import { PieceColor, PieceType} from "chess.js";
-import { MatchInfo, MatchState } from "../../types/chessTypes";
+import { MatchInfo } from "../../types/chessTypes";
 import { ExtrinsicResult } from "../../types/apiTypes";
 import { displayError } from "../../utils/messages";
 
@@ -34,24 +34,17 @@ function isMyPiece(match: MatchInfo, myAddress: string, piece: PieceColor): bool
     return false;
  }
 
-function isMyTurn(match: MatchInfo, state: MatchState, myAddress: string): boolean {
-   if(state === 'Whites' && myAddress === match.challenger){
+function isMyTurn(match: MatchInfo, myAddress: string): boolean {
+   if(match.state === 'Whites' && myAddress === match.challenger){
     return true;
    }
-   if(state === 'Blacks' && myAddress === match.opponent){
+   if(match.state === 'Blacks' && myAddress === match.opponent){
     return true;
    }
    return false;
 }
 
-function changeTurn(match: MatchInfo, state: MatchState, myAddress: string): MatchState {
-    if(state === 'Whites' && myAddress === match.challenger){
-     return 'Blacks';
-    }
-    return 'Whites';
- }
-
-function statusMsg(match: MatchInfo, state: MatchState, myAddress: string): string {
+function statusMsg(match: MatchInfo, myAddress: string): string {
     const status = match.state;
     if(status == 'AwaitingOpponent'){
         return "Awaiting for your opponent to accept";
@@ -62,7 +55,7 @@ function statusMsg(match: MatchInfo, state: MatchState, myAddress: string): stri
     if (status === 'Won'){
         return "Match has ended with victory";
     }
-    if(isMyTurn(match, state, myAddress)){
+    if(isMyTurn(match, myAddress)){
         return "Your turn to move"; 
     }
     return "Waiting for your opponent to move";
@@ -78,8 +71,9 @@ function matchHasStarted(match: MatchInfo): boolean {
 
  function displayErrorExtrinsic(result: ExtrinsicResult){
     if(!result.success){
+        console.log("here4");
         displayError(result.message);
     }
 }
 
-export{boardOrientation, getPieceType, getPieceColor, isMyPiece, isMyTurn,changeTurn, statusMsg, matchHasStarted, displayErrorExtrinsic }
+export{boardOrientation, getPieceType, getPieceColor, isMyPiece, isMyTurn,statusMsg, matchHasStarted, displayErrorExtrinsic }

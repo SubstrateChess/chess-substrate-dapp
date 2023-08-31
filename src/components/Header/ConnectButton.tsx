@@ -8,7 +8,6 @@ import Wallets from '../Wallets/Wallets';
 import { useAccount, useWallets } from '../../contexts/contexts';
 import { ConnectViews, SigningAccount } from '../../types/walletTypes';
 import Accounts from '../Accounts/Accounts';
-import { formatAddressToChain } from '../../utils/accounts';
 
 export const ConnectButton = () => {
     const [visible, setVisible] = useState(false);
@@ -68,7 +67,7 @@ export const ConnectButton = () => {
             {address && (
               <Identicon
                 style={{ cursor: 'unset' }}
-                value={formatAddressToChain(address)}
+                value={address}
                 theme="polkadot"
                 size={18}
               />

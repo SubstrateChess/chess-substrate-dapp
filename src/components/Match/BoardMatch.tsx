@@ -6,8 +6,8 @@ import { Chessboard } from "react-chessboard";
 import DotLoader from "react-spinners/ClipLoader";
 import { Button } from '../../ui/Button';
 import { Modal } from '../../ui/Modal';
-import { Match, MatchState } from '../../types/chessTypes';
-import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic, changeTurn } from './boardHelper';
+import { Match } from '../../types/chessTypes';
+import { boardOrientation, getPieceColor, getPieceType, isMyPiece, isMyTurn, matchHasStarted, statusMsg, displayErrorExtrinsic } from './boardHelper';
 import { displayError, displayMessage, displaySuccess } from '../../utils/messages';
 import { useApi } from '../../contexts/apiProvider';
 import { abandon_match, abort_match, make_move } from '../../chain/game';
@@ -15,9 +15,7 @@ import { SigningAccount } from '../../types/walletTypes';
 import { Square } from 'react-chessboard/dist/chessboard/types';
 import { getMatch } from '../../chain/matches';
 import { ExtrinsicResult } from '../../types/apiTypes';
-import { formatAddressToChain } from '../../utils/accounts';
 
-const SECONDS_TO_WAIT_SINCE_EVENT_TRIGGERED = 15000;
 interface MatchProps{
   game: Match;
   matches: Match[];
@@ -27,10 +25,11 @@ interface MatchProps{
 }
 export const BoardMatch = (props: MatchProps) => {
   const [game, setGame] = React.useState(new Chess());
-  const [status, setStatus] = React.useState<MatchState>(props.game.match.state);
+  const [fen, setFen] = React.useState(game.fen());
+  const [movePiece, setMovePiece] = React.useState("");
+  const [statusMessage, setStatusMessage] = React.useState("");
   const [matchInfo, setMatchInfo] = React.useState<Match>(props.game);
-
-  const [isModalVisible, setVisible] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const { api } = useApi();
@@ -43,12 +42,24 @@ export const BoardMatch = (props: MatchProps) => {
       const chess = new Chess();
       chess.load(matchInfo.match.board);
       setGame(chess);
+      setFen(matchInfo.match.board);
+      setStatusMessage(statusMsg(matchInfo.match, props.myAccount.account.address));
       if (api){
         queryEvents(api);
       }
     }
     
   }, []);
+
+  React.useEffect(() => {
+    async function move() {
+      if (movePiece !== ""){
+        await performMove();
+        setMovePiece("");
+      }
+    }
+    move();
+  }, [movePiece !== ""]);
 
   const closeModal = () => {
     setVisible(false);
@@ -82,11 +93,9 @@ export const BoardMatch = (props: MatchProps) => {
       }
     }
   }
-
   const updateMatch = async () => {
-    //TODO: Check if can be less and message not showing
-    await sleep(SECONDS_TO_WAIT_SINCE_EVENT_TRIGGERED);
-    displayMessage("The opponent made a move.");
+    setGame(game);
+    setFen(game.fen());
     if (api){
       const refresh_match = await getMatch(api, matchInfo.match_id);
       if(refresh_match){
@@ -94,7 +103,8 @@ export const BoardMatch = (props: MatchProps) => {
         const chess = new Chess();
         chess.load(refresh_match.match.board);
         setGame(chess);
-        setStatus(refresh_match.match.state);
+        setFen(refresh_match.match.board);
+        setStatusMessage(statusMsg(refresh_match.match, props.myAccount.account.address));
       }
       else{
         displayMessage("Game Over");
@@ -104,15 +114,11 @@ export const BoardMatch = (props: MatchProps) => {
     }
   }
 
-  const performMove = async (movePiece: string) => {
+  const performMove = async () => {
     try{
       if(api){
         await make_move(api, props.myAccount, props.game.match_id, movePiece,  async (result) => {
-          if(!result.success){
-            displayError("Error executing the extrinsic: " + result.message);
-            await updateMatch();
-            return false;
-          }
+          await updateMatch();
           return true;
         });
       }
@@ -126,17 +132,15 @@ export const BoardMatch = (props: MatchProps) => {
       return false;
     }
   }
-
-
-  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+  
 
 
  function onDrop(sourceSquare: Square, targetSquare: Square, piece: string)  {
-    if(!isMyPiece(matchInfo.match, formatAddressToChain(props.myAccount.account.address), getPieceColor(piece))) {
+    if(!isMyPiece(matchInfo.match, props.myAccount.account.address, getPieceColor(piece))) {
       displayError("You can't move you opponent pieces");
       return false;
     }
-    if(isMyTurn(matchInfo.match, status, formatAddressToChain(props.myAccount.account.address))){
+    if(isMyTurn(matchInfo.match, props.myAccount.account.address)){
       const gameCopy: Chess = game;
       const m: Move = {
         color: getPieceColor(piece),
@@ -158,19 +162,9 @@ export const BoardMatch = (props: MatchProps) => {
           else{
             if(gameCopy.isCheckmate()){
               displaySuccess("Checkmate, you won!");
-              setStatus('Won');
             }
-            else if(gameCopy.isDraw()){
-              displayMessage("Draw");
-              setStatus('Drawn');
-            }
-            else {
-              setStatus(changeTurn(matchInfo.match, status, formatAddressToChain(props.myAccount.account.address)));
-            }
-            gameCopy.load(gameCopy.fen());
             setGame(gameCopy);
-            //Make it async?
-            performMove(sourceSquare.toString() + targetSquare.toString());
+            setMovePiece(sourceSquare.toString() + targetSquare.toString());
             return true;
           }
         }
@@ -181,7 +175,8 @@ export const BoardMatch = (props: MatchProps) => {
         else {
           displayError("Not your turn to move");
           return false;
-        } 
+        }
+      
   }
 
   function queryEvents(api: ApiPromise): void {
@@ -193,12 +188,13 @@ export const BoardMatch = (props: MatchProps) => {
         // For the following events the first parameter is the hash of the match, check that is from this match
         if (event.section === 'chess' && event.data[0].toString() === props.game.match_id.toString()) {
             if(event.method === 'MatchStarted'){
-              updateMatch();
+                updateMatch();
             }
             else if(event.method === 'MoveExecuted'){
                // Update match in case who make the extrinsic is the oponent
-               if (event.data[1].toString() != formatAddressToChain(props.myAccount.account.address)) {
-                // TODO: Check if the move ends the match and not update it event.data[2].toHuman()
+               if (event.data[1].toString() != props.myAccount.account.address) {
+                //TODO: If I lose dont update the match
+                displayMessage("The opponent made a move.");
                 updateMatch();
                }
             }
@@ -206,20 +202,20 @@ export const BoardMatch = (props: MatchProps) => {
               displayMessage("Match Aborted!");
             }
             else if(event.method === 'MatchWon'){
-              if (event.data[1].toString() != formatAddressToChain(props.myAccount.account.address)) {
+              if (event.data[1].toString() != props.myAccount.account.address) {
                 displayError("Match finish, you lost!");
-                setStatus("Lost");
+                setStatusMessage("You lost!");
                 props.showMatches(false);
               }
               else {
                 displaySuccess("Match finish, you won!");
-                setStatus("Won");
+                setStatusMessage("Congratulations, You won!");
               }
               props.setGameOnGoing(false);
             }
             else if(event.method === 'MatchDrawn'){
               displayMessage("Match finish, drawn!");
-              setStatus("Drawn");
+              setStatusMessage("Drawn");
               props.setGameOnGoing(false);
             }
         }
@@ -230,12 +226,12 @@ export const BoardMatch = (props: MatchProps) => {
   return (
     <>
       <span className="text-h5 font-semibolds">
-        Status: {statusMsg(matchInfo.match, status, formatAddressToChain(props.myAccount.account.address))}
+        Status: {statusMessage}
       </span>
       
       <div className="text-center text-body">
         <div className="flex flex-col w-full items-center gap-2 px-4 lg:gap-4 lg:px-0">
-        <Modal open={isModalVisible} onClose={() => closeModal()}>
+        <Modal open={visible} onClose={() => closeModal()}>
             {loading &&
             <div className="flex flex-col content-between space-y-4 items-center justify-center max-h-[90vh] px-1 py-2">
               <DotLoader color="#e6007a" size={100}/>
@@ -252,9 +248,9 @@ export const BoardMatch = (props: MatchProps) => {
           }
           
         </Modal>
-          <Chessboard id="chessBoard" position={game.fen()} onPieceDrop={onDrop} 
+          <Chessboard id="chessBoard" position={fen} onPieceDrop={onDrop} 
             boardWidth={480}
-            boardOrientation={boardOrientation(matchInfo.match, formatAddressToChain(props.myAccount.account.address))} 
+            boardOrientation={boardOrientation(matchInfo.match, props.myAccount.account.address)} 
             customBoardStyle={{
             borderRadius: "4px",
             boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
